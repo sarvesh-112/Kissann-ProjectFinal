@@ -56,10 +56,10 @@ export function Dashboard({ setActiveView }: DashboardProps) {
           >
             <Image 
               src="https://placehold.co/400x400.png" 
-              alt="Farmer illustration" 
+              alt="An illustration of a friendly Indian farmer" 
               width={400} 
               height={400} 
-              data-ai-hint="farmer mascot"
+              data-ai-hint="indian farmer"
               className="rounded-full shadow-2xl"
             />
           </motion.div>
@@ -79,6 +79,15 @@ export function Dashboard({ setActiveView }: DashboardProps) {
                         tabIndex={0}
                         aria-label="Navigate to Crop Disease Diagnosis"
                     >
+                        <div className="relative h-40 w-full">
+                            <Image
+                                src="https://placehold.co/300x200.png"
+                                alt="A healthy green plant"
+                                fill
+                                className="object-cover"
+                                data-ai-hint="healthy plant"
+                            />
+                        </div>
                         <CardHeader className="flex flex-row items-center gap-4 p-6">
                             <div className="bg-primary/10 p-3 rounded-xl">
                             <Leaf className="w-8 h-8 text-primary" />
@@ -102,6 +111,15 @@ export function Dashboard({ setActiveView }: DashboardProps) {
                       tabIndex={0}
                       aria-label="Navigate to Market Price Analysis"
                   >
+                       <div className="relative h-40 w-full">
+                            <Image
+                                src="https://placehold.co/300x200.png"
+                                alt="A vibrant market stall with produce"
+                                fill
+                                className="object-cover"
+                                data-ai-hint="market stall"
+                            />
+                        </div>
                       <CardHeader className="flex flex-row items-center gap-4 p-6">
                           <div className="bg-primary/10 p-3 rounded-xl">
                               <BarChart3 className="w-8 h-8 text-primary" />
@@ -125,6 +143,15 @@ export function Dashboard({ setActiveView }: DashboardProps) {
                       tabIndex={0}
                       aria-label="Navigate to Government Schemes"
                   >
+                        <div className="relative h-40 w-full">
+                            <Image
+                                src="https://placehold.co/300x200.png"
+                                alt="An illustration of a government building"
+                                fill
+                                className="object-cover"
+                                data-ai-hint="government building"
+                            />
+                        </div>
                       <CardHeader className="flex flex-row items-center gap-4 p-6">
                           <div className="bg-primary/10 p-3 rounded-xl">
                               <Landmark className="w-8 h-8 text-primary" />
