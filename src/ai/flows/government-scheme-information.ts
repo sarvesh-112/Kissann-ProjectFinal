@@ -1,4 +1,3 @@
-// GovernmentSchemeInformation.ts
 'use server';
 /**
  * @fileOverview A government scheme information retrieval AI agent.
@@ -10,6 +9,7 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import { logSchemeQuery } from '@/services/firestoreService';
 
 const GovernmentSchemeInformationInputSchema = z.object({
   query: z.string().describe('The farmer\u2019s query about government schemes.'),
@@ -19,26 +19,35 @@ export type GovernmentSchemeInformationInput = z.infer<typeof GovernmentSchemeIn
 const GovernmentSchemeInformationOutputSchema = z.object({
   scheme: z.string().describe('The name of the relevant government scheme.'),
   eligibility: z.string().describe('The eligibility criteria for the scheme.'),
-  link: z.string().url().describe('A link to apply for the scheme.'),
+  link: z.string().url().describe('A link to apply for or learn more about the scheme.'),
   summary: z.string().describe('A summary of the scheme.'),
 });
 export type GovernmentSchemeInformationOutput = z.infer<typeof GovernmentSchemeInformationOutputSchema>;
 
 export async function getGovernmentSchemeInformation(input: GovernmentSchemeInformationInput): Promise<GovernmentSchemeInformationOutput> {
-  return governmentSchemeInformationFlow(input);
+    try {
+        const result = await governmentSchemeInformationFlow(input);
+        // Do not await logging
+        logSchemeQuery(input.query, result);
+        return result;
+    } catch (error) {
+        console.error("Error in getGovernmentSchemeInformation flow:", error);
+        throw new Error("Failed to retrieve government scheme information.");
+    }
 }
 
 const prompt = ai.definePrompt({
   name: 'governmentSchemeInformationPrompt',
   input: {schema: GovernmentSchemeInformationInputSchema},
   output: {schema: GovernmentSchemeInformationOutputSchema},
-  prompt: `You are an expert in government schemes for farmers.
+  prompt: `You are an expert on Indian government schemes for farmers.
+  Based on the user's query, identify the most relevant scheme.
+  Provide a concise summary, the eligibility criteria, and a valid application link.
 
-You will use this information to understand the farmer's query and match relevant schemes.
+  User Query: {{{query}}}
 
-Query: {{{query}}}
-
-Match relevant scheme(s), summarize eligibility, and provide an application link.
+  If no specific scheme matches, provide information on a general agricultural support scheme.
+  Ensure the link is a valid, working URL.
 `,
 });
 
@@ -50,6 +59,9 @@ const governmentSchemeInformationFlow = ai.defineFlow(
   },
   async input => {
     const {output} = await prompt(input);
-    return output!;
+    if (!output) {
+      throw new Error("The model did not return valid scheme information.");
+    }
+    return output;
   }
 );

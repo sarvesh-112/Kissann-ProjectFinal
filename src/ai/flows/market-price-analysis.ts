@@ -10,6 +10,7 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import { logPriceQuery } from '@/services/firestoreService';
 
 const MarketPriceAnalysisInputSchema = z.object({
   crop: z.string().describe('The crop to get market prices for, e.g., tomato, potato.'),
@@ -24,7 +25,15 @@ const MarketPriceAnalysisOutputSchema = z.object({
 export type MarketPriceAnalysisOutput = z.infer<typeof MarketPriceAnalysisOutputSchema>;
 
 export async function getMarketPriceAnalysis(input: MarketPriceAnalysisInput): Promise<MarketPriceAnalysisOutput> {
-  return marketPriceAnalysisFlow(input);
+    try {
+        const result = await marketPriceAnalysisFlow(input);
+        // Do not await logging
+        logPriceQuery(input, result);
+        return result;
+    } catch (error) {
+        console.error("Error in getMarketPriceAnalysis flow:", error);
+        throw new Error("Failed to analyze market prices.");
+    }
 }
 
 const getMarketData = ai.defineTool({
@@ -41,13 +50,13 @@ const getMarketData = ai.defineTool({
     trend: z.string().describe('The trend of the market price (e.g., increasing, decreasing, stable).'),
   }),
 }, async (input) => {
-  // TODO: Implement the logic to fetch market data from external APIs like AGMARKNET
-  // For now, return mock data
+  // Mock implementation for fetching market data from external APIs like AGMARKNET
+  console.log(`Fetching market data for ${input.crop} in ${input.location}`);
   return {
     crop: input.crop,
     location: input.location,
-    price: '₹22/kg',
-    trend: 'Prices have dropped 5% from yesterday. Sell now recommended.',
+    price: `₹${(Math.random() * 20 + 15).toFixed(0)}/kg`,
+    trend: 'Prices have been stable this week, with a slight increase expected tomorrow. Selling now is a safe bet, but waiting a day might yield higher returns.',
   };
 });
 
@@ -64,9 +73,7 @@ const marketPriceAnalysisPrompt = ai.definePrompt({
 
   Use the getMarketData tool to get the current market data.
 
-  Format:
-  Summary: <summary of market prices>
-  Advice: <advice on whether to sell or wait>
+  Format the output as a JSON object with 'summary' and 'advice' keys.
   `,
 });
 
@@ -78,6 +85,9 @@ const marketPriceAnalysisFlow = ai.defineFlow(
   },
   async input => {
     const {output} = await marketPriceAnalysisPrompt(input);
-    return output!;
+    if (!output) {
+      throw new Error("The model did not return a valid market analysis.");
+    }
+    return output;
   }
 );

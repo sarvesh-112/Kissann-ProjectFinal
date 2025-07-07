@@ -10,6 +10,7 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import { logDiseaseDiagnosis } from '@/services/firestoreService';
 
 const DiagnoseCropDiseaseInputSchema = z.object({
   photoDataUri: z
@@ -27,7 +28,15 @@ const DiagnoseCropDiseaseOutputSchema = z.object({
 export type DiagnoseCropDiseaseOutput = z.infer<typeof DiagnoseCropDiseaseOutputSchema>;
 
 export async function diagnoseCropDisease(input: DiagnoseCropDiseaseInput): Promise<DiagnoseCropDiseaseOutput> {
-  return diagnoseCropDiseaseFlow(input);
+    try {
+        const result = await diagnoseCropDiseaseFlow(input);
+        // Do not await logging to avoid delaying the response to the user
+        logDiseaseDiagnosis(input.photoDataUri, result);
+        return result;
+    } catch (error) {
+        console.error("Error in diagnoseCropDisease flow:", error);
+        throw new Error("Failed to diagnose crop disease.");
+    }
 }
 
 const prompt = ai.definePrompt({
@@ -36,11 +45,6 @@ const prompt = ai.definePrompt({
   output: {schema: DiagnoseCropDiseaseOutputSchema},
   prompt: `You are an expert in plant pathology. Analyze the provided image of a crop and identify any potential diseases or pests.
   Based on your analysis, suggest local remedies that a farmer can apply to address the issue.
-  Return the disease and remedy in the following JSON format:
-  {
-    "disease": "disease/pest name",
-    "remedy": "local remedy"
-  }
   Use the following image for diagnosis:
   {{media url=photoDataUri}}`,
 });
@@ -53,6 +57,9 @@ const diagnoseCropDiseaseFlow = ai.defineFlow(
   },
   async input => {
     const {output} = await prompt(input);
-    return output!;
+    if (!output) {
+      throw new Error("The model did not return a valid diagnosis.");
+    }
+    return output;
   }
 );

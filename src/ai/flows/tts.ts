@@ -20,32 +20,34 @@ const TextToSpeechOutputSchema = z.object({
 export type TextToSpeechOutput = z.infer<typeof TextToSpeechOutputSchema>;
 
 export async function textToSpeech(
-  input: TextToSpeechInput
+  input: TextToSpeechInput,
+  languageCode: 'en-US' | 'kn-IN' = 'kn-IN'
 ): Promise<TextToSpeechOutput> {
-  return ttsFlow(input);
+  return ttsFlow({ text: input, languageCode });
 }
 
 const ttsFlow = ai.defineFlow(
   {
     name: 'ttsFlow',
-    inputSchema: TextToSpeechInputSchema,
+    inputSchema: z.object({
+        text: TextToSpeechInputSchema,
+        languageCode: z.enum(['en-US', 'kn-IN']),
+    }),
     outputSchema: TextToSpeechOutputSchema,
   },
-  async (text) => {
+  async ({ text, languageCode }) => {
     const {media} = await ai.generate({
       model: googleAI.model('gemini-2.5-flash-preview-tts'),
       config: {
         responseModalities: ['AUDIO'],
         speechConfig: {
-          voiceConfig: {
-            prebuiltVoiceConfig: {voiceName: 'Algenib'},
-          },
+          languageCode: languageCode,
         },
       },
       prompt: text,
     });
     if (!media) {
-      throw new Error('no media returned');
+      throw new Error('no media returned from TTS model');
     }
     const audioBuffer = Buffer.from(
       media.url.substring(media.url.indexOf(',') + 1),
