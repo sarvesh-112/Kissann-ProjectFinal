@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
 import { diagnoseCropDisease, DiagnoseCropDiseaseOutput } from '@/ai/flows/crop-disease-diagnosis';
+import { textToSpeech } from '@/ai/flows/tts';
 import { Loader2, Sparkles, AlertTriangle, Mic, Volume2 } from 'lucide-react';
 
 const formSchema = z.object({
@@ -21,6 +22,8 @@ export function CropDiseaseDiagnosis() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<DiagnoseCropDiseaseOutput | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const [isSpeaking, setIsSpeaking] = useState(false);
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -42,6 +45,7 @@ export function CropDiseaseDiagnosis() {
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setLoading(true);
     setResult(null);
+    setAudioUrl(null);
 
     const reader = new FileReader();
     reader.readAsDataURL(data.image);
@@ -70,6 +74,25 @@ export function CropDiseaseDiagnosis() {
       });
       setLoading(false);
     };
+  };
+
+  const handleSpeak = async (text: string) => {
+    if (!text || isSpeaking) return;
+    setIsSpeaking(true);
+    setAudioUrl(null);
+    try {
+      const response = await textToSpeech(text);
+      setAudioUrl(response.media);
+    } catch (error) {
+      console.error('Error generating speech:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Speech Error',
+        description: 'Failed to generate audio. Please try again.',
+      });
+    } finally {
+      setIsSpeaking(false);
+    }
   };
 
   return (
@@ -148,8 +171,8 @@ export function CropDiseaseDiagnosis() {
                   <CardTitle className="font-headline text-2xl">Diagnosis Result</CardTitle>
                   <CardDescription>Here's what our AI found.</CardDescription>
                 </div>
-                <Button variant="ghost" size="icon" className="ml-auto">
-                    <Volume2 className="h-5 w-5" />
+                <Button variant="ghost" size="icon" className="ml-auto" onClick={() => handleSpeak(result.disease + '. ' + result.remedy)} disabled={isSpeaking}>
+                    {isSpeaking ? <Loader2 className="h-5 w-5 animate-spin" /> : <Volume2 className="h-5 w-5" />}
                 </Button>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -166,6 +189,9 @@ export function CropDiseaseDiagnosis() {
                 </div>
               </CardContent>
             </Card>
+          )}
+          {audioUrl && (
+            <audio autoPlay src={audioUrl} onEnded={() => setAudioUrl(null)} className="hidden" />
           )}
         </div>
       </div>

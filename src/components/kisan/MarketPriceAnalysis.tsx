@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
 import { getMarketPriceAnalysis, MarketPriceAnalysisOutput } from '@/ai/flows/market-price-analysis';
+import { textToSpeech } from '@/ai/flows/tts';
 import { Loader2, BarChart3, Lightbulb, Mic, Volume2 } from 'lucide-react';
 
 const formSchema = z.object({
@@ -20,6 +21,8 @@ const formSchema = z.object({
 export function MarketPriceAnalysis() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<MarketPriceAnalysisOutput | null>(null);
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const [isSpeaking, setIsSpeaking] = useState(false);
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -33,6 +36,7 @@ export function MarketPriceAnalysis() {
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setLoading(true);
     setResult(null);
+    setAudioUrl(null);
     try {
       const analysisResult = await getMarketPriceAnalysis(data);
       setResult(analysisResult);
@@ -45,6 +49,25 @@ export function MarketPriceAnalysis() {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSpeak = async (text: string) => {
+    if (!text || isSpeaking) return;
+    setIsSpeaking(true);
+    setAudioUrl(null);
+    try {
+      const response = await textToSpeech(text);
+      setAudioUrl(response.media);
+    } catch (error) {
+      console.error('Error generating speech:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Speech Error',
+        description: 'Failed to generate audio. Please try again.',
+      });
+    } finally {
+      setIsSpeaking(false);
     }
   };
 
@@ -131,8 +154,8 @@ export function MarketPriceAnalysis() {
                     <CardTitle className="font-headline text-2xl">Price Analysis</CardTitle>
                     <CardDescription>For {form.getValues('crop')} in {form.getValues('location')}</CardDescription>
                 </div>
-                 <Button variant="ghost" size="icon" className="ml-auto">
-                    <Volume2 className="h-5 w-5" />
+                 <Button variant="ghost" size="icon" className="ml-auto" onClick={() => handleSpeak(result.summary + '. ' + result.advice)} disabled={isSpeaking}>
+                    {isSpeaking ? <Loader2 className="h-5 w-5 animate-spin" /> : <Volume2 className="h-5 w-5" />}
                 </Button>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -149,6 +172,9 @@ export function MarketPriceAnalysis() {
                 </div>
               </CardContent>
             </Card>
+          )}
+          {audioUrl && (
+            <audio autoPlay src={audioUrl} onEnded={() => setAudioUrl(null)} className="hidden" />
           )}
         </div>
       </div>
