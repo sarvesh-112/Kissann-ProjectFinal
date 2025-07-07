@@ -4,8 +4,8 @@
  * @fileOverview An AI agent to find relevant government schemes for farmers.
  * This implementation uses a more robust RAG (Retrieval-Augmented Generation) pattern.
  * 1. Retrieve: A local fuzzy search (Fuse.js) finds candidate schemes from a JSON file.
- * 2. Augment: The candidates are passed to the AI model.
- * 3. Generate: The AI model returns ONLY the name of the best scheme, which is safer than generating a full JSON object.
+ * 2. Augment: The candidates are passed to the AI model with their index.
+ * 3. Generate: The AI model returns ONLY the index of the best scheme, which is safer and more reliable.
  */
 
 import fs from 'fs';
@@ -40,26 +40,27 @@ try {
 const fuse = new Fuse(schemes, {
   keys: ['scheme', 'summary', 'eligibility'],
   includeScore: true,
-  threshold: 0.5, // Loosened threshold to cast a wider net for the AI to analyze
+  threshold: 0.4, // Using a slightly stricter threshold, as the AI will make the final decision.
 });
 
 
-// Define the input for the AI prompt, which includes the user query and a list of candidate schemes.
+// Define the input for the AI prompt, which includes the user query and a list of candidate schemes with indices.
 const SchemeSelectorPromptInputSchema = z.object({
   query: z.string(),
   candidates: z.array(z.object({
+    index: z.number(),
     scheme: z.string(),
     summary: z.string(),
   })),
 });
 
-// Define a simpler output schema for the AI. It only needs to return the name.
+// Define a simpler output schema for the AI. It only needs to return the index.
 const SchemeSelectorPromptOutputSchema = z.object({
-    bestSchemeName: z.string().describe('The "scheme" name of the single best match from the list, or the exact string "Not Found".'),
+    bestSchemeIndex: z.number().describe('The index number of the single best match from the list, or -1 if no match is found.'),
 });
 
 
-// The prompt instructs the AI to select the best match from the pre-filtered candidates.
+// The prompt instructs the AI to select the best match from the pre-filtered candidates by its index.
 const schemeSelectorPrompt = ai.definePrompt({
   name: 'schemeSelectorPrompt',
   input: { schema: SchemeSelectorPromptInputSchema },
@@ -68,16 +69,16 @@ const schemeSelectorPrompt = ai.definePrompt({
 
 User's Query: "{{query}}"
 
-Here is a list of candidate government schemes.
+Here is a list of candidate government schemes with their index numbers.
 {{#each candidates}}
-- Scheme Name: "{{scheme}}", Summary: "{{summary}}"
+- Index: {{index}}, Scheme Name: "{{scheme}}", Summary: "{{summary}}"
 {{/each}}
 
 Instructions:
 1.  Analyze the user's query carefully to understand their core need.
 2.  Examine the candidate schemes and select the single best match for the user's query.
-3.  You MUST return only the exact name of the best matching scheme.
-4.  If none of the candidates are a good match, you MUST return the exact string "Not Found".
+3.  You MUST return only the index number of the best matching scheme.
+4.  If none of the candidates are a good match, you MUST return the number -1.
 `,
 });
 
@@ -103,18 +104,20 @@ const schemeFinderFlow = ai.defineFlow(
         };
     }
     
-    // 2. Augment & 3. Generate: Pass candidates to the AI for the final selection
+    // 2. Augment & 3. Generate: Pass candidates with indices to the AI for the final selection
     const { output } = await schemeSelectorPrompt({
       query: input.query,
-      // Pass only the necessary info to the prompt
-      candidates: candidates.map(c => ({ scheme: c.scheme, summary: c.summary })),
+      // Pass candidates with their original index in the `candidates` array
+      candidates: candidates.map((c, index) => ({ index, scheme: c.scheme, summary: c.summary })),
     });
 
-    if (!output || !output.bestSchemeName) {
-      throw new Error("The model did not return a valid scheme name.");
+    if (output === null || typeof output.bestSchemeIndex !== 'number') {
+      throw new Error("The model did not return a valid scheme index.");
     }
     
-    if (output.bestSchemeName === 'Not Found') {
+    const { bestSchemeIndex } = output;
+
+    if (bestSchemeIndex === -1 || !candidates[bestSchemeIndex]) {
         return {
             scheme: 'Not Found',
             summary: `I reviewed a few options but could not find a specific scheme for "${input.query}". You can find all schemes on the official government portal.`,
@@ -123,12 +126,12 @@ const schemeFinderFlow = ai.defineFlow(
         };
     }
 
-    // Find the full scheme details from the original list
-    const finalScheme = schemes.find(s => s.scheme === output.bestSchemeName);
+    // Find the full scheme details from the original list using the index.
+    const finalScheme = candidates[bestSchemeIndex];
 
     if (!finalScheme) {
-      // This case handles if the AI hallucinates a scheme name not in the list.
-      throw new Error(`Model returned a scheme name "${output.bestSchemeName}" that was not in the candidate list.`);
+      // This is a safety check, but should be less likely to happen with the index approach.
+      throw new Error(`Model returned an invalid index "${bestSchemeIndex}" that is out of bounds for the candidate list.`);
     }
 
     return finalScheme;
