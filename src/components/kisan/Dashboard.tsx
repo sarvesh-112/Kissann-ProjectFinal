@@ -72,30 +72,20 @@ export function Dashboard({ setActiveView }: DashboardProps) {
             <div className="grid gap-8 md:grid-cols-3">
                 <motion.div custom={0} initial="hidden" animate="visible" variants={cardVariants}>
                     <Card 
-                        className="hover:shadow-xl hover:-translate-y-2 transition-all duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-2xl overflow-hidden"
+                        className="hover:shadow-xl hover:-translate-y-2 transition-all duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-2xl overflow-hidden text-center p-6 flex flex-col items-center"
                         onClick={() => setActiveView('disease')}
                         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setActiveView('disease'); }}
                         role="button"
                         tabIndex={0}
                         aria-label="Navigate to Crop Disease Diagnosis"
                     >
-                        <div className="relative h-40 w-full">
-                            <Image
-                                src="https://images.unsplash.com/photo-1600703129760-67c216b8ffb0?auto=format&fit=crop&w=800&q=80"
-                                alt="A healthy green plant"
-                                width={800}
-                                height={600}
-                                className="w-full h-full object-cover"
-                                data-ai-hint="healthy plant"
-                            />
+                        <div className="bg-primary/10 p-4 rounded-full mb-4">
+                            <Leaf className="w-12 h-12 text-primary" />
                         </div>
-                        <CardHeader className="flex flex-row items-center gap-4 p-6">
-                            <div className="bg-primary/10 p-3 rounded-xl">
-                              <Leaf className="w-8 h-8 text-primary" />
-                            </div>
+                        <CardHeader className="p-0">
                             <CardTitle className="font-headline text-xl">Crop Diagnosis</CardTitle>
                         </CardHeader>
-                        <CardContent className="p-6 pt-0">
+                        <CardContent className="p-0 mt-2">
                             <p className="text-muted-foreground">
                               Upload a photo to instantly identify diseases and get expert remedies.
                             </p>
@@ -105,30 +95,20 @@ export function Dashboard({ setActiveView }: DashboardProps) {
                 
                 <motion.div custom={1} initial="hidden" animate="visible" variants={cardVariants}>
                   <Card 
-                      className="hover:shadow-xl hover:-translate-y-2 transition-all duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-2xl overflow-hidden"
+                      className="hover:shadow-xl hover:-translate-y-2 transition-all duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-2xl overflow-hidden text-center p-6 flex flex-col items-center"
                       onClick={() => setActiveView('market')}
                       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setActiveView('market'); }}
                       role="button"
                       tabIndex={0}
                       aria-label="Navigate to Market Price Analysis"
                   >
-                      <div className="relative h-40 w-full">
-                          <Image
-                              src="https://images.unsplash.com/photo-1603252109303-a6f3bdaaa2a3?auto=format&fit=crop&w=800&q=80"
-                              alt="A vibrant market stall with produce"
-                              width={800}
-                              height={600}
-                              className="w-full h-full object-cover"
-                              data-ai-hint="market stall"
-                          />
+                      <div className="bg-primary/10 p-4 rounded-full mb-4">
+                          <BarChart3 className="w-12 h-12 text-primary" />
                       </div>
-                      <CardHeader className="flex flex-row items-center gap-4 p-6">
-                          <div className="bg-primary/10 p-3 rounded-xl">
-                              <BarChart3 className="w-8 h-8 text-primary" />
-                          </div>
+                      <CardHeader className="p-0">
                           <CardTitle className="font-headline text-xl">Price Analysis</CardTitle>
                       </CardHeader>
-                      <CardContent className="p-6 pt-0">
+                      <CardContent className="p-0 mt-2">
                           <p className="text-muted-foreground">
                             Get real-time market prices and AI-powered advice on when to sell.
                           </p>
@@ -138,30 +118,20 @@ export function Dashboard({ setActiveView }: DashboardProps) {
                 
                 <motion.div custom={2} initial="hidden" animate="visible" variants={cardVariants}>
                   <Card 
-                      className="hover:shadow-xl hover:-translate-y-2 transition-all duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-2xl overflow-hidden"
+                      className="hover:shadow-xl hover:-translate-y-2 transition-all duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-2xl overflow-hidden text-center p-6 flex flex-col items-center"
                       onClick={() => setActiveView('schemes')}
                       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setActiveView('schemes'); }}
                       role="button"
                       tabIndex={0}
                       aria-label="Navigate to Government Schemes"
                   >
-                      <div className="relative h-40 w-full">
-                          <Image
-                              src="https://images.unsplash.com/photo-1599488615732-2f27f624f720?auto=format&fit=crop&w=800&q=80"
-                              alt="An illustration of a government building"
-                              width={800}
-                              height={600}
-                              className="w-full h-full object-cover"
-                              data-ai-hint="government building"
-                          />
+                      <div className="bg-primary/10 p-4 rounded-full mb-4">
+                          <Landmark className="w-12 h-12 text-primary" />
                       </div>
-                      <CardHeader className="flex flex-row items-center gap-4 p-6">
-                          <div className="bg-primary/10 p-3 rounded-xl">
-                              <Landmark className="w-8 h-8 text-primary" />
-                          </div>
+                      <CardHeader className="p-0">
                           <CardTitle className="font-headline text-xl">Govt. Schemes</CardTitle>
                       </CardHeader>
-                      <CardContent className="p-6 pt-0">
+                      <CardContent className="p-0 mt-2">
                           <p className="text-muted-foreground">
                             Ask about government schemes and get clear summaries on eligibility.
                           </p>
