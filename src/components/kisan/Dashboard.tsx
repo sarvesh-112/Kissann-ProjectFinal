@@ -59,7 +59,7 @@ export function Dashboard({ setActiveView }: DashboardProps) {
               alt="An illustration of a friendly Indian farmer" 
               width={400} 
               height={400} 
-              data-ai-hint="indian farmer"
+              data-ai-hint="indian farmer illustration"
               className="rounded-full shadow-2xl"
             />
           </motion.div>
@@ -83,9 +83,8 @@ export function Dashboard({ setActiveView }: DashboardProps) {
                             <Image
                                 src="https://images.unsplash.com/photo-1600703129760-67c216b8ffb0?auto=format&fit=crop&w=800&q=80"
                                 alt="A healthy green plant"
-                                width={800}
-                                height={600}
-                                className="object-cover w-full h-full rounded-t-2xl"
+                                fill
+                                className="object-cover rounded-t-2xl"
                                 data-ai-hint="healthy plant"
                             />
                         </div>
@@ -116,9 +115,8 @@ export function Dashboard({ setActiveView }: DashboardProps) {
                           <Image
                               src="https://images.unsplash.com/photo-1603252109303-a6f3bdaaa2a3?auto=format&fit=crop&w=800&q=80"
                               alt="A vibrant market stall with produce"
-                              width={800}
-                              height={600}
-                              className="object-cover w-full h-full rounded-t-2xl"
+                              fill
+                              className="object-cover rounded-t-2xl"
                               data-ai-hint="market stall"
                           />
                       </div>
@@ -149,9 +147,8 @@ export function Dashboard({ setActiveView }: DashboardProps) {
                           <Image
                               src="https://images.unsplash.com/photo-1599488615732-2f27f624f720?auto=format&fit=crop&w=800&q=80"
                               alt="An illustration of a government building"
-                              width={800}
-                              height={600}
-                              className="object-cover w-full h-full rounded-t-2xl"
+                              fill
+                              className="object-cover rounded-t-2xl"
                               data-ai-hint="government building"
                           />
                       </div>
