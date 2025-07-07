@@ -44,7 +44,7 @@ export function ChatAssistant() {
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [language, setLanguage] = useState<SupportedLanguage>('english');
   const { toast } = useToast();
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -74,14 +74,8 @@ export function ChatAssistant() {
     }
   }, [transcript, form]);
 
-
   const scrollToBottom = () => {
-    if (scrollAreaRef.current) {
-        const viewport = scrollAreaRef.current.querySelector('div[data-radix-scroll-area-viewport]');
-        if (viewport) {
-            viewport.scrollTop = viewport.scrollHeight;
-        }
-    }
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
@@ -158,7 +152,7 @@ export function ChatAssistant() {
       </header>
       <Card className="flex-1 flex flex-col shadow-xl rounded-2xl overflow-hidden">
         <CardContent className="p-0 flex-1 flex flex-col">
-           <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
+           <ScrollArea className="flex-1 p-4">
              <div className="space-y-6">
                 <AnimatePresence>
                 {messages.map((message, index) => (
@@ -171,7 +165,7 @@ export function ChatAssistant() {
                     >
                     {message.role === 'assistant' && <Bot className="h-8 w-8 text-primary shrink-0 rounded-full bg-primary/10 p-1.5" />}
                     <div className={cn("p-3 rounded-2xl max-w-xl shadow-md", message.role === 'user' ? 'bg-primary text-primary-foreground rounded-br-none' : 'bg-secondary rounded-bl-none')}>
-                        <p className="text-sm">{message.text}</p>
+                        <p className="text-sm whitespace-pre-wrap">{message.text}</p>
                         <p className={cn("text-xs mt-1.5", message.role === 'user' ? 'text-primary-foreground/70 text-right' : 'text-muted-foreground text-left')}>
                             {message.timestamp}
                         </p>
@@ -193,6 +187,7 @@ export function ChatAssistant() {
                         </div>
                     </motion.div>
                 )}
+                <div ref={messagesEndRef} />
              </div>
            </ScrollArea>
            <div className="p-4 border-t bg-background/80">
