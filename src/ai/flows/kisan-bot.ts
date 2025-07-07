@@ -1,39 +1,45 @@
 'use server';
+
 /**
  * @fileOverview A conversational AI assistant for farmers called KisanBot.
  *
  * - askKisanBot - A function that handles conversational queries.
  */
 
-import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import { ai } from '@/ai/genkit';
+import { z } from 'genkit';
+
 import { getMarketPriceAnalysis } from './market-price-analysis';
 import { getGovernmentSchemeInformation } from './government-scheme-information';
 import { getDiagnosisFromSymptoms } from './symptom-checker';
-import { 
-    MarketPriceAnalysisInputSchema,
-    MarketPriceAnalysisOutputSchema,
-    GovernmentSchemeInformationInputSchema,
-    GovernmentSchemeInformationOutputSchema,
-    DiagnoseCropDiseaseBySymptomsInputSchema,
-    DiagnoseCropDiseaseOutputSchema,
-    SupportedLanguageSchema,
-    type SupportedLanguage
+
+import {
+  MarketPriceAnalysisInputSchema,
+  MarketPriceAnalysisOutputSchema,
+  GovernmentSchemeInformationInputSchema,
+  GovernmentSchemeInformationOutputSchema,
+  DiagnoseCropDiseaseBySymptomsInputSchema,
+  DiagnoseCropDiseaseOutputSchema,
+  SupportedLanguageSchema,
+  type SupportedLanguage,
 } from '@/ai/schemas';
-import { logAgentInteraction, logAgentFailure } from '@/services/firestoreService';
 
+import {
+  logAgentInteraction,
+  logAgentFailure,
+} from '@/services/firestoreService';
 
+// Input schema
 const AssistantInputSchema = z.object({
   query: z.string().describe('The user query.'),
   language: SupportedLanguageSchema.describe('The language of the user query.'),
 });
 
-// Define tools that the assistant can use
+// Tool: Market Price
 const findMarketPrice = ai.defineTool(
   {
     name: 'findMarketPrice',
-    description:
-      'Get the market price for a crop in a specific location and advice on selling.',
+    description: 'Get the market price for a crop in a specific location and advice on selling.',
     inputSchema: MarketPriceAnalysisInputSchema,
     outputSchema: MarketPriceAnalysisOutputSchema,
   },
@@ -42,11 +48,11 @@ const findMarketPrice = ai.defineTool(
   }
 );
 
+// Tool: Government Scheme
 const findGovernmentScheme = ai.defineTool(
   {
     name: 'findGovernmentScheme',
-    description:
-      'Get information about government schemes for farmers based on a query.',
+    description: 'Get information about government schemes for farmers based on a query.',
     inputSchema: GovernmentSchemeInformationInputSchema,
     outputSchema: GovernmentSchemeInformationOutputSchema,
   },
@@ -55,6 +61,7 @@ const findGovernmentScheme = ai.defineTool(
   }
 );
 
+// Tool: Crop Disease Diagnosis
 const diagnoseDiseaseFromSymptoms = ai.defineTool(
   {
     name: 'diagnoseDiseaseFromSymptoms',
@@ -67,14 +74,16 @@ const diagnoseDiseaseFromSymptoms = ai.defineTool(
   }
 );
 
-
-// Define the main assistant prompt
+// 🔧 Fix output schema: Gemini will now return { response: "text" }
 const kisanBotPrompt = ai.definePrompt({
   name: 'kisanBotPrompt',
   tools: [findMarketPrice, findGovernmentScheme, diagnoseDiseaseFromSymptoms],
   input: { schema: AssistantInputSchema },
-  // Changed schema to `z.any()` for debugging, as Gemini might return a structured object from tools.
-  output: { schema: z.any() },
+  output: {
+    schema: z.object({
+      response: z.string().describe("The AI assistant’s response to the user query."),
+    }),
+  },
   prompt: `You are KisanBot, a friendly and expert AI assistant for farmers in India.
 Your role is to understand the user's query and use the available tools to provide an accurate and concise answer.
 You MUST respond in the same language as the user's query. The user is speaking {{language}}.
@@ -90,58 +99,55 @@ User Query: {{{query}}}
 `,
 });
 
-// Define the main flow
+// 🌾 Flow that calls the prompt and logs interaction
 const kisanBotFlow = ai.defineFlow(
   {
     name: 'kisanBotFlow',
     inputSchema: AssistantInputSchema,
-    // The flow must ultimately return a string to the client-side function.
-    outputSchema: z.string(),
+    outputSchema: z.string(), // Ultimately returns a plain string to frontend
   },
   async (input) => {
-    console.log("[KisanBot] Flow received input:", input);
-    
-    const { output } = await kisanBotPrompt(input);
-    
-    console.log("[KisanBot] Raw output from Gemini:", output);
+    console.log('[KisanBot] Flow input:', input);
 
-    if (!output) {
-      throw new Error("The model did not return a valid response.");
+    const { output } = await kisanBotPrompt(input);
+
+    console.log('[KisanBot] Raw Gemini output:', output);
+
+    if (!output || !output.response) {
+      throw new Error('The model did not return a valid response.');
     }
 
-    // The output can be a string or a structured object from a tool call.
-    // We ensure it's always a string before returning.
-    const responseText = typeof output === 'string' ? output : JSON.stringify(output, null, 2);
+    const responseText = output.response;
 
-    // Do not await logging
     logAgentInteraction(input.query, responseText, input.language);
-
     return responseText;
   }
 );
 
-export async function askKisanBot(query: string, language: SupportedLanguage = 'english'): Promise<string> {
-    try {
-        const result = await kisanBotFlow({ query, language });
-         if (!result) {
-            throw new Error("Received an empty or invalid response from the assistant flow.");
-        }
-        return result;
-    } catch (error) {
-        // Detailed logging for debugging.
-        console.error("Error in askKisanBot:", {
-            message: error instanceof Error ? error.message : String(error),
-            stack: error instanceof Error ? error.stack : 'No stack available',
-            input: query,
-            language: language,
-        });
+// 🧠 Public method: safe wrapper with fallback + error logging
+export async function askKisanBot(
+  query: string,
+  language: SupportedLanguage = 'english'
+): Promise<string> {
+  try {
+    const result = await kisanBotFlow({ query, language });
 
-        const fallbackMessage = "Sorry, I am having trouble connecting right now. Please try again in a moment.";
-
-        // Log the failure to a dedicated Firestore collection for monitoring.
-        // Do not await this to avoid delaying the user response.
-        logAgentFailure(query, error, language);
-        
-        return fallbackMessage;
+    if (!result) {
+      throw new Error('Received an empty or invalid response from the assistant flow.');
     }
+
+    return result;
+  } catch (error) {
+    console.error('Error in askKisanBot:', {
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : 'No stack available',
+      input: query,
+      language,
+    });
+
+    const fallbackMessage = 'Sorry, I am having trouble connecting right now. Please try again in a moment.';
+
+    logAgentFailure(query, error, language);
+    return fallbackMessage;
+  }
 }
