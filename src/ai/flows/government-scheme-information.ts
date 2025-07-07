@@ -1,13 +1,18 @@
 'use server';
 
 /**
- * @fileOverview An AI agent to find relevant government schemes for farmers by reasoning over a local JSON file.
+ * @fileOverview An AI agent to find relevant government schemes for farmers.
+ * This implementation uses a RAG (Retrieval-Augmented Generation) pattern.
+ * 1. Retrieve: A local fuzzy search (Fuse.js) finds candidate schemes from a JSON file.
+ * 2. Augment: The candidates are passed to the AI model.
+ * 3. Generate: The AI model reasons over the candidates to find the best match.
  */
 
 import fs from 'fs';
 import path from 'path';
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
+import Fuse from 'fuse.js';
 
 import {
   GovernmentSchemeInformationInputSchema,
@@ -24,41 +29,46 @@ import {
 // Load the schemes data from the JSON file.
 const SCHEMES_FILE = path.join(process.cwd(), 'src/data/govt-schemes.json');
 let schemes: any[] = [];
-let schemesJSON: string = '';
 try {
   const raw = fs.readFileSync(SCHEMES_FILE, 'utf-8');
   schemes = JSON.parse(raw);
-  schemesJSON = JSON.stringify(schemes, null, 2); // Keep the JSON string for the prompt
 } catch (error) {
   console.error('❌ Failed to load or parse govt-schemes.json:', error);
 }
 
-// Define the input for the AI prompt, which includes the user query and the list of schemes.
-const SchemeFinderPromptInputSchema = z.object({
-  query: z.string(),
-  schemes: z.string(), // JSON string of all schemes
+// Configure Fuse.js for fuzzy searching
+const fuse = new Fuse(schemes, {
+  keys: ['scheme', 'summary', 'eligibility'],
+  includeScore: true,
+  threshold: 0.4, // Adjust threshold for sensitivity
 });
 
-// The prompt instructs the AI to find the best match from the JSON data.
-const schemeFinderPrompt = ai.definePrompt({
-  name: 'schemeFinderPrompt',
-  input: { schema: SchemeFinderPromptInputSchema },
+
+// Define the input for the AI prompt, which includes the user query and a list of candidate schemes.
+const SchemeSelectorPromptInputSchema = z.object({
+  query: z.string(),
+  candidates: z.string(), // JSON string of candidate schemes
+});
+
+// The prompt instructs the AI to select the best match from the pre-filtered candidates.
+const schemeSelectorPrompt = ai.definePrompt({
+  name: 'schemeSelectorPrompt',
+  input: { schema: SchemeSelectorPromptInputSchema },
   output: { schema: GovernmentSchemeInformationOutputSchema },
-  prompt: `You are an expert assistant for Indian farmers. Your task is to find the most relevant government scheme from the provided JSON data that matches the user's query.
+  prompt: `You are an expert assistant for Indian farmers. Your task is to select the single most relevant government scheme from a list of pre-selected candidates that best matches the user's query.
 
 User's Query: "{{query}}"
 
-Here is the list of available government schemes in JSON format:
+Here is a list of candidate government schemes in JSON format. These have been pre-filtered to be potentially relevant.
 \`\`\`json
-{{schemes}}
+{{candidates}}
 \`\`\`
 
 Instructions:
-1.  Analyze the user's query to understand their need (e.g., "loan for seeds", "crop insurance", "help for organic farming").
-2.  Carefully search through the provided JSON data to find the *single best* scheme that addresses the user's need.
-3.  If you find a relevant scheme, return its details ("scheme", "summary", "eligibility", "link") in the exact output format.
-4.  If no scheme directly matches the query, use your best judgment to find the closest one.
-5.  If you are absolutely sure that no scheme is relevant, return an object with the scheme name "Not Found" and a helpful summary explaining that you could not find a match in the provided data.
+1.  Analyze the user's query carefully to understand their core need.
+2.  Examine the candidate schemes and select the single best match for the user's query.
+3.  If you find a perfectly relevant scheme, return its details ("scheme", "summary", "eligibility", "link") in the required JSON format.
+4.  If none of the candidates are a good match, return an object with the scheme name "Not Found" and a helpful summary explaining that you could not find a match for the query '{{query}}'.
 `,
 });
 
@@ -70,10 +80,24 @@ const schemeFinderFlow = ai.defineFlow(
     outputSchema: GovernmentSchemeInformationOutputSchema,
   },
   async (input) => {
-    // We pass the user's query and the full list of schemes to the AI.
-    const { output } = await schemeFinderPrompt({
+    // 1. Retrieve: Use Fuse.js to find top 5 candidate schemes
+    const searchResults = fuse.search(input.query).slice(0, 5);
+    const candidates = searchResults.map(result => result.item);
+
+    // If no candidates are found by the local search, return a specific message.
+    if (candidates.length === 0) {
+        return {
+            scheme: 'Not Found',
+            summary: `I could not find any schemes related to your query for "${input.query}". Please try rephrasing or search for a different topic.`,
+            eligibility: 'N/A',
+            link: 'https://www.india.gov.in/',
+        };
+    }
+    
+    // 2. Augment & 3. Generate: Pass candidates to the AI for the final selection
+    const { output } = await schemeSelectorPrompt({
       query: input.query,
-      schemes: schemesJSON,
+      candidates: JSON.stringify(candidates, null, 2),
     });
 
     if (!output) {
