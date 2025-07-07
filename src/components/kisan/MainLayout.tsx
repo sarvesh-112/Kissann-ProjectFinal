@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from 'react';
-import { Header } from '@/components/Header';
+import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
+import { AppSidebar } from '@/components/kisan/AppSidebar';
 import { Dashboard } from '@/components/kisan/Dashboard';
 import { CropDiseaseDiagnosis } from '@/components/kisan/CropDiseaseDiagnosis';
 import { MarketPriceAnalysis } from '@/components/kisan/MarketPriceAnalysis';
@@ -32,15 +33,17 @@ export function MainLayout() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-background">
-      <Header activeView={activeView} setActiveView={setActiveView} />
-      <main className="flex-1">
-        {renderView()}
-      </main>
-      <footer className="py-6 text-center text-sm text-muted-foreground border-t bg-background">
-        <p className="font-semibold">A Procedural Prospectors Creation</p>
-        <p className="mt-1">Developed by Sarvesh Ganesan</p>
-      </footer>
-    </div>
+     <SidebarProvider>
+        <AppSidebar activeView={activeView} setActiveView={setActiveView} />
+        <SidebarInset className="flex flex-col min-h-screen">
+            <main className="flex-1">
+                {renderView()}
+            </main>
+            <footer className="py-4 px-6 text-center text-xs text-muted-foreground border-t bg-background">
+                <p className="font-semibold">A Procedural Prospectors Creation</p>
+                <p className="mt-1 font-body">Developed by Sarvesh Ganesan</p>
+            </footer>
+        </SidebarInset>
+    </SidebarProvider>
   );
 }

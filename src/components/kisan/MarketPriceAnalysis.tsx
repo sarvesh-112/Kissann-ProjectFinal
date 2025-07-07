@@ -11,13 +11,25 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { useToast } from '@/hooks/use-toast';
 import { getMarketPriceAnalysis, MarketPriceAnalysisOutput } from '@/ai/flows/market-price-analysis';
 import { textToSpeech } from '@/ai/flows/tts';
-import { Loader2, BarChart3, Lightbulb, Mic, Volume2 } from 'lucide-react';
+import { Loader2, BarChart3, Lightbulb, Mic, Volume2, TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
 
 const formSchema = z.object({
   crop: z.string().min(2, { message: 'Crop name must be at least 2 characters.' }),
   location: z.string().min(2, { message: 'Location must be at least 2 characters.' }),
 });
+
+const TrendIndicator = ({ summary }: { summary: string }) => {
+    const lowerSummary = summary.toLowerCase();
+    if (lowerSummary.includes('up') || lowerSummary.includes('increased') || lowerSummary.includes('rose') || lowerSummary.includes('high')) {
+        return <TrendingUp className="h-5 w-5 text-green-600" />;
+    }
+    if (lowerSummary.includes('down') || lowerSummary.includes('dropped') || lowerSummary.includes('decreased') || lowerSummary.includes('low')) {
+        return <TrendingDown className="h-5 w-5 text-destructive" />;
+    }
+    return <Minus className="h-5 w-5 text-muted-foreground" />;
+};
+
 
 export function MarketPriceAnalysis() {
   const [loading, setLoading] = useState(false);
@@ -78,12 +90,8 @@ export function MarketPriceAnalysis() {
       const response = await textToSpeech(text, 'kn-IN');
       if (response?.media) {
         setAudioUrl(response.media);
-      } else {
-        // Speech unavailable, do nothing.
-        console.warn("Speech generation failed or returned no media.");
       }
     } catch (error) {
-      // Log error but don't show toast to user
       console.error('Error during speech generation call:', error);
     } finally {
       setIsSpeaking(false);
@@ -104,7 +112,7 @@ export function MarketPriceAnalysis() {
     <div className="p-4 sm:p-6 lg:p-8 space-y-6">
       <header>
         <h1 className="font-headline text-4xl font-bold tracking-tight">Market Price Analysis</h1>
-        <p className="text-muted-foreground mt-2">Enter a crop and location to get AI-powered price analysis and advice.</p>
+        <p className="text-muted-foreground mt-2 font-body">Enter a crop and location to get AI-powered price analysis and advice.</p>
       </header>
 
       <div className="grid gap-8 md:grid-cols-2">
@@ -113,7 +121,7 @@ export function MarketPriceAnalysis() {
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <CardHeader>
                 <CardTitle className="font-headline text-2xl">Check Market Prices</CardTitle>
-                <CardDescription>Find out the current market rates for your produce.</CardDescription>
+                <CardDescription className="font-body">Find out the current market rates for your produce.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <FormField
@@ -121,7 +129,7 @@ export function MarketPriceAnalysis() {
                   name="crop"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Crop Name</FormLabel>
+                      <FormLabel className="font-body">Crop Name</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <Input placeholder="e.g., Tomato, Potato" {...field} />
@@ -139,7 +147,7 @@ export function MarketPriceAnalysis() {
                   name="location"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Location / Market</FormLabel>
+                      <FormLabel className="font-body">Location / Market</FormLabel>
                       <FormControl>
                          <div className="relative">
                           <Input placeholder="e.g., Hassan, Bangalore" {...field} />
@@ -175,7 +183,7 @@ export function MarketPriceAnalysis() {
               <CardContent className="text-center p-6">
                 <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
                 <p className="font-semibold font-headline">Fetching Market Data...</p>
-                <p className="text-sm text-muted-foreground">Our AI is analyzing the latest prices.</p>
+                <p className="text-sm text-muted-foreground font-body">Our AI is analyzing the latest prices.</p>
               </CardContent>
             </Card>
           )}
@@ -186,7 +194,7 @@ export function MarketPriceAnalysis() {
                  <BarChart3 className="h-8 w-8 text-primary shrink-0" />
                 <div>
                     <CardTitle className="font-headline text-2xl">Price Analysis</CardTitle>
-                    <CardDescription>For {form.getValues('crop')} in {form.getValues('location')}</CardDescription>
+                    <CardDescription className="font-body">For {form.getValues('crop')} in {form.getValues('location')}</CardDescription>
                 </div>
                  <Button variant="ghost" size="icon" className="ml-auto" onClick={() => handleSpeak(result.summary + '. ' + result.advice)} disabled={isSpeaking}>
                     {isSpeaking ? <Loader2 className="h-5 w-5 animate-spin" /> : <Volume2 className="h-5 w-5" />}
@@ -194,15 +202,17 @@ export function MarketPriceAnalysis() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <h3 className="font-headline text-lg font-semibold">Price Summary</h3>
-                  <p className="text-muted-foreground whitespace-pre-wrap">{result.summary}</p>
+                  <h3 className="font-headline text-lg font-semibold flex items-center gap-2">
+                    Price Summary <TrendIndicator summary={result.summary} />
+                  </h3>
+                  <p className="text-muted-foreground whitespace-pre-wrap font-body">{result.summary}</p>
                 </div>
                 <div>
                    <h3 className="font-headline text-lg font-semibold flex items-center gap-2">
                     <Lightbulb className="h-5 w-5 text-accent-foreground stroke-accent" />
                     AI-Powered Advice
                   </h3>
-                  <p className="text-foreground font-medium pl-7">{result.advice}</p>
+                  <p className="text-foreground font-medium pl-7 font-body">{result.advice}</p>
                 </div>
               </CardContent>
             </Card>

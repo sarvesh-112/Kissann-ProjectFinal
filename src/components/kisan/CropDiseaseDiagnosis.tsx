@@ -101,13 +101,9 @@ export function CropDiseaseDiagnosis() {
       const response = await textToSpeech(text, 'kn-IN');
       if (response?.media) {
         setAudioUrl(response.media);
-      } else {
-        // Speech unavailable, do nothing.
-        console.warn("Speech generation failed or returned no media.");
       }
     } catch (error) {
-      // Log error but don't show toast to user
-      console.error('Error during speech generation call:', error);
+      console.error('Error during speech generation call, handled gracefully:', error);
     } finally {
       setIsSpeaking(false);
     }
@@ -125,7 +121,7 @@ export function CropDiseaseDiagnosis() {
     <div className="p-4 sm:p-6 lg:p-8 space-y-6">
       <header>
         <h1 className="font-headline text-4xl font-bold tracking-tight">Crop Disease Diagnosis</h1>
-        <p className="text-muted-foreground mt-2">Upload an image of an affected crop to get an AI-powered diagnosis and remedy.</p>
+        <p className="text-muted-foreground mt-2 font-body">Upload an image of an affected crop to get an AI-powered diagnosis and remedy.</p>
       </header>
 
       <div className="grid gap-8 md:grid-cols-2">
@@ -134,7 +130,7 @@ export function CropDiseaseDiagnosis() {
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <CardHeader>
                 <CardTitle className="font-headline text-2xl">Upload Crop Image</CardTitle>
-                <CardDescription>Select a clear image of the crop showing signs of disease.</CardDescription>
+                <CardDescription className="font-body">Select a clear image of the crop showing signs of disease.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <FormField
@@ -142,7 +138,7 @@ export function CropDiseaseDiagnosis() {
                   name="image"
                   render={() => (
                     <FormItem>
-                      <FormLabel>Crop Image</FormLabel>
+                      <FormLabel className="font-body">Crop Image</FormLabel>
                       <FormControl>
                         <Input type="file" accept="image/*" onChange={handleFileChange} className="file:text-primary"/>
                       </FormControl>
@@ -160,7 +156,7 @@ export function CropDiseaseDiagnosis() {
                   name="description"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Or describe the issue (optional)</FormLabel>
+                      <FormLabel className="font-body">Or describe the issue (optional)</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <Textarea placeholder="e.g., 'The leaves have yellow spots and are wilting...'" {...field} />
@@ -196,7 +192,7 @@ export function CropDiseaseDiagnosis() {
               <CardContent className="text-center p-6">
                 <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
                 <p className="font-semibold font-headline">Analyzing Image...</p>
-                <p className="text-sm text-muted-foreground">Our AI is looking at your crop.</p>
+                <p className="text-sm text-muted-foreground font-body">Our AI is looking at your crop.</p>
               </CardContent>
             </Card>
           )}
@@ -207,7 +203,7 @@ export function CropDiseaseDiagnosis() {
                 <Sparkles className="h-8 w-8 text-accent-foreground stroke-accent shrink-0" />
                 <div>
                   <CardTitle className="font-headline text-2xl">Diagnosis Result</CardTitle>
-                  <CardDescription>Here's what our AI found.</CardDescription>
+                  <CardDescription className="font-body">Here's what our AI found.</CardDescription>
                 </div>
                 <Button variant="ghost" size="icon" className="ml-auto" onClick={() => handleSpeak(result.disease + '. ' + result.remedy)} disabled={isSpeaking}>
                     {isSpeaking ? <Loader2 className="h-5 w-5 animate-spin" /> : <Volume2 className="h-5 w-5" />}
@@ -219,11 +215,11 @@ export function CropDiseaseDiagnosis() {
                     <AlertTriangle className="h-5 w-5 text-destructive" />
                     Detected Issue
                   </h3>
-                  <p className="text-lg text-foreground pl-7">{result.disease}</p>
+                  <p className="text-lg text-foreground pl-7 font-body">{result.disease}</p>
                 </div>
                 <div>
                   <h3 className="font-headline text-lg font-semibold">Recommended Remedy</h3>
-                  <p className="text-muted-foreground whitespace-pre-wrap">{result.remedy}</p>
+                  <p className="text-muted-foreground whitespace-pre-wrap font-body">{result.remedy}</p>
                 </div>
               </CardContent>
             </Card>

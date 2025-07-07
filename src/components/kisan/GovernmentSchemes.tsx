@@ -72,12 +72,8 @@ export function GovernmentSchemes() {
       const response = await textToSpeech(text, 'kn-IN');
       if (response?.media) {
         setAudioUrl(response.media);
-      } else {
-        // Speech unavailable, do nothing.
-        console.warn("Speech generation failed or returned no media.");
       }
     } catch (error) {
-      // Log error but don't show toast to user
       console.error('Error during speech generation call:', error);
     } finally {
       setIsSpeaking(false);
@@ -96,7 +92,7 @@ export function GovernmentSchemes() {
     <div className="p-4 sm:p-6 lg:p-8 space-y-6">
       <header>
         <h1 className="font-headline text-4xl font-bold tracking-tight">Government Scheme Information</h1>
-        <p className="text-muted-foreground mt-2">Ask a question about government programs for farmers to get relevant information.</p>
+        <p className="text-muted-foreground mt-2 font-body">Ask a question about government programs for farmers to get relevant information.</p>
       </header>
       
       <div className="grid gap-8 md:grid-cols-2">
@@ -105,7 +101,7 @@ export function GovernmentSchemes() {
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <CardHeader>
                 <CardTitle className="font-headline text-2xl">Ask About a Scheme</CardTitle>
-                <CardDescription>Describe what you need help with, e.g., "I need a loan for buying seeds" or "tell me about crop insurance".</CardDescription>
+                <CardDescription className="font-body">Describe what you need help with, e.g., "I need a loan for buying seeds" or "tell me about crop insurance".</CardDescription>
               </CardHeader>
               <CardContent>
                 <FormField
@@ -113,7 +109,7 @@ export function GovernmentSchemes() {
                   name="query"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Your Question</FormLabel>
+                      <FormLabel className="font-body">Your Question</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <Textarea rows={5} placeholder="Type your question here..." {...field} />
@@ -149,7 +145,7 @@ export function GovernmentSchemes() {
               <CardContent className="text-center p-6">
                 <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
                 <p className="font-semibold font-headline">Finding Schemes...</p>
-                <p className="text-sm text-muted-foreground">Our AI is searching for relevant information.</p>
+                <p className="text-sm text-muted-foreground font-body">Our AI is searching for relevant information.</p>
               </CardContent>
             </Card>
           )}
@@ -160,7 +156,7 @@ export function GovernmentSchemes() {
                  <Landmark className="h-8 w-8 text-primary shrink-0" />
                 <div>
                     <CardTitle className="font-headline text-2xl">{result.scheme}</CardTitle>
-                    <CardDescription>Information based on your query.</CardDescription>
+                    <CardDescription className="font-body">Information based on your query.</CardDescription>
                 </div>
                 <Button variant="ghost" size="icon" className="ml-auto" onClick={() => handleSpeak(result.scheme + '. ' + result.summary + ' Eligibility: ' + result.eligibility)} disabled={isSpeaking}>
                     {isSpeaking ? <Loader2 className="h-5 w-5 animate-spin" /> : <Volume2 className="h-5 w-5" />}
@@ -172,16 +168,16 @@ export function GovernmentSchemes() {
                     <FileText className="h-5 w-5 text-primary" />
                     Summary
                   </h3>
-                  <p className="text-muted-foreground pl-7">{result.summary}</p>
+                  <p className="text-muted-foreground pl-7 font-body">{result.summary}</p>
                 </div>
                 <div>
                    <h3 className="font-headline text-lg font-semibold">Eligibility</h3>
-                  <p className="text-muted-foreground">{result.eligibility}</p>
+                  <p className="text-muted-foreground font-body">{result.eligibility}</p>
                 </div>
                  <div>
                    <h3 className="font-headline text-lg font-semibold">Application Link</h3>
                     <Button asChild variant="link" className="p-0 h-auto">
-                        <a href={result.link} target="_blank" rel="noopener noreferrer" className="text-base text-primary hover:underline">
+                        <a href={result.link} target="_blank" rel="noopener noreferrer" className="text-base text-primary hover:underline font-body">
                             <Link className="mr-2 h-4 w-4" />
                             Visit Official Scheme Page
                         </a>
