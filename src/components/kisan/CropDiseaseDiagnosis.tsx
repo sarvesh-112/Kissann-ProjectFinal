@@ -99,13 +99,21 @@ export function CropDiseaseDiagnosis() {
     setAudioUrl(null);
     try {
       const response = await textToSpeech(text, 'kn-IN');
-      setAudioUrl(response.media);
+      if (response?.media) {
+        setAudioUrl(response.media);
+      } else {
+        toast({
+          variant: 'destructive',
+          title: 'Speech Unavailable',
+          description: 'Could not generate audio due to high demand. Please try again later.',
+        });
+      }
     } catch (error) {
-      console.error('Error generating speech:', error);
+      console.error('Error during speech generation call:', error);
       toast({
         variant: 'destructive',
         title: 'Speech Error',
-        description: 'Failed to generate audio. Please try again.',
+        description: 'An unexpected error occurred while generating audio.',
       });
     } finally {
       setIsSpeaking(false);

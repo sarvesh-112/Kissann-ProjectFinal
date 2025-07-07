@@ -20,8 +20,15 @@ export type TtsLanguageCode = 'en-US' | 'kn-IN' | 'hi-IN' | 'ta-IN';
 export async function textToSpeech(
   input: TextToSpeechInput,
   languageCode: TtsLanguageCode = 'kn-IN'
-): Promise<TextToSpeechOutput> {
-  return ttsFlow({ text: input, languageCode });
+): Promise<TextToSpeechOutput | null> { // Updated return type
+  try {
+    // We call the flow and return its result directly if successful.
+    return await ttsFlow({ text: input, languageCode });
+  } catch (error) {
+    // If the flow fails (e.g., due to quota limits), we log the error and return null.
+    console.error("Text-to-speech generation failed. This might be a quota issue.", error);
+    return null;
+  }
 }
 
 const ttsFlow = ai.defineFlow(
