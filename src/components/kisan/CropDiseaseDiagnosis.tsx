@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -13,9 +13,12 @@ import { useToast } from '@/hooks/use-toast';
 import { diagnoseCropDisease, DiagnoseCropDiseaseOutput } from '@/ai/flows/crop-disease-diagnosis';
 import { textToSpeech } from '@/ai/flows/tts';
 import { Loader2, Sparkles, AlertTriangle, Mic, Volume2 } from 'lucide-react';
+import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
+import { Textarea } from '../ui/textarea';
 
 const formSchema = z.object({
   image: z.any().refine((file) => file instanceof File, 'Image is required.'),
+  description: z.string().optional(),
 });
 
 export function CropDiseaseDiagnosis() {
@@ -26,9 +29,23 @@ export function CropDiseaseDiagnosis() {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const { toast } = useToast();
 
+  const { isListening, transcript, startListening, stopListening } = useSpeechRecognition({
+    onTranscript: (text) => {
+      form.setValue('description', text);
+      stopListening();
+    },
+  });
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
+
+   useEffect(() => {
+    if (transcript) {
+      form.setValue('description', transcript);
+    }
+  }, [transcript, form]);
+
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -81,7 +98,7 @@ export function CropDiseaseDiagnosis() {
     setIsSpeaking(true);
     setAudioUrl(null);
     try {
-      const response = await textToSpeech(text);
+      const response = await textToSpeech(text, 'kn-IN');
       setAudioUrl(response.media);
     } catch (error) {
       console.error('Error generating speech:', error);
@@ -92,6 +109,14 @@ export function CropDiseaseDiagnosis() {
       });
     } finally {
       setIsSpeaking(false);
+    }
+  };
+  
+  const toggleListening = () => {
+    if (isListening) {
+      stopListening();
+    } else {
+      startListening();
     }
   };
 
@@ -129,12 +154,24 @@ export function CropDiseaseDiagnosis() {
                     <Image src={preview} alt="Crop preview" layout="fill" objectFit="cover" />
                   </div>
                 )}
-                 <div className="relative mt-4">
-                  <Input placeholder="Or describe the issue..."/>
-                  <Button variant="ghost" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8">
-                    <Mic className="h-4 w-4" />
-                  </Button>
-                </div>
+                 <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Or describe the issue (optional)</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Textarea placeholder="e.g., 'The leaves have yellow spots and are wilting...'" {...field} />
+                          <Button variant="ghost" size="icon" className="absolute right-2 bottom-2 h-8 w-8" type="button" onClick={toggleListening}>
+                            <Mic className={`h-4 w-4 ${isListening ? 'text-destructive animate-pulse' : ''}`} />
+                          </Button>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </CardContent>
               <CardFooter>
                 <Button type="submit" disabled={loading} className="font-semibold">

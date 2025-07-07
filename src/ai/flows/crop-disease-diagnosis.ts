@@ -9,23 +9,15 @@
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
 import { logDiseaseDiagnosis } from '@/services/firestoreService';
+import { 
+    DiagnoseCropDiseaseInputSchema, 
+    DiagnoseCropDiseaseOutputSchema,
+    type DiagnoseCropDiseaseInput,
+    type DiagnoseCropDiseaseOutput 
+} from '@/ai/schemas';
 
-const DiagnoseCropDiseaseInputSchema = z.object({
-  photoDataUri: z
-    .string()
-    .describe(
-      "A photo of a crop, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
-    ),
-});
-export type DiagnoseCropDiseaseInput = z.infer<typeof DiagnoseCropDiseaseInputSchema>;
-
-const DiagnoseCropDiseaseOutputSchema = z.object({
-  disease: z.string().describe('The detected disease or pest affecting the crop.'),
-  remedy: z.string().describe('Local remedy suggestions to address the identified issue.'),
-});
-export type DiagnoseCropDiseaseOutput = z.infer<typeof DiagnoseCropDiseaseOutputSchema>;
+export type { DiagnoseCropDiseaseInput, DiagnoseCropDiseaseOutput };
 
 export async function diagnoseCropDisease(input: DiagnoseCropDiseaseInput): Promise<DiagnoseCropDiseaseOutput> {
     try {

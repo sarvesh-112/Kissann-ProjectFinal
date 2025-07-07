@@ -4,25 +4,12 @@
  * @fileOverview Fetches market prices for crops and provides advice on selling or waiting.
  *
  * - getMarketPriceAnalysis - A function that handles the market price analysis process.
- * - MarketPriceAnalysisInput - The input type for the getMarketPriceAnalysis function.
- * - MarketPriceAnalysisOutput - The return type for the getMarketPriceAnalysis function.
  */
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 import { logPriceQuery } from '@/services/firestoreService';
-
-const MarketPriceAnalysisInputSchema = z.object({
-  crop: z.string().describe('The crop to get market prices for, e.g., tomato, potato.'),
-  location: z.string().describe('The location to get market prices for, e.g., Hassan, Bangalore.'),
-});
-export type MarketPriceAnalysisInput = z.infer<typeof MarketPriceAnalysisInputSchema>;
-
-const MarketPriceAnalysisOutputSchema = z.object({
-  summary: z.string().describe('A summary of the current market prices for the crop.'),
-  advice: z.string().describe('Advice on whether to sell or wait, based on the market prices.'),
-});
-export type MarketPriceAnalysisOutput = z.infer<typeof MarketPriceAnalysisOutputSchema>;
+import { MarketPriceAnalysisInputSchema, MarketPriceAnalysisOutputSchema, type MarketPriceAnalysisInput, type MarketPriceAnalysisOutput } from '@/ai/schemas';
 
 export async function getMarketPriceAnalysis(input: MarketPriceAnalysisInput): Promise<MarketPriceAnalysisOutput> {
     try {

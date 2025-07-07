@@ -2,9 +2,12 @@
 
 import { db } from '@/lib/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import type { DiagnoseCropDiseaseOutput } from '@/ai/flows/crop-disease-diagnosis';
-import type { MarketPriceAnalysisOutput, MarketPriceAnalysisInput } from '@/ai/flows/market-price-analysis';
-import type { GovernmentSchemeInformationOutput } from '@/ai/flows/government-scheme-information';
+import type { 
+    DiagnoseCropDiseaseOutput,
+    MarketPriceAnalysisInput,
+    MarketPriceAnalysisOutput,
+    GovernmentSchemeInformationOutput
+} from '@/ai/schemas';
 
 // A placeholder for session management. In a real app, you'd get this from user auth.
 const getSessionInfo = () => ({

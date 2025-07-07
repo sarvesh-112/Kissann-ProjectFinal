@@ -3,26 +3,17 @@
  * @fileOverview A government scheme information retrieval AI agent.
  *
  * - getGovernmentSchemeInformation - A function that handles the government scheme information retrieval process.
- * - GovernmentSchemeInformationInput - The input type for the getGovernmentSchemeInformation function.
- * - GovernmentSchemeInformationOutput - The return type for the getGovernmentSchemeInformation function.
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
 import { logSchemeQuery } from '@/services/firestoreService';
+import { 
+    GovernmentSchemeInformationInputSchema, 
+    GovernmentSchemeInformationOutputSchema, 
+    type GovernmentSchemeInformationInput, 
+    type GovernmentSchemeInformationOutput 
+} from '@/ai/schemas';
 
-const GovernmentSchemeInformationInputSchema = z.object({
-  query: z.string().describe('The farmer\u2019s query about government schemes.'),
-});
-export type GovernmentSchemeInformationInput = z.infer<typeof GovernmentSchemeInformationInputSchema>;
-
-const GovernmentSchemeInformationOutputSchema = z.object({
-  scheme: z.string().describe('The name of the relevant government scheme.'),
-  eligibility: z.string().describe('The eligibility criteria for the scheme.'),
-  link: z.string().url().describe('A link to apply for or learn more about the scheme.'),
-  summary: z.string().describe('A summary of the scheme.'),
-});
-export type GovernmentSchemeInformationOutput = z.infer<typeof GovernmentSchemeInformationOutputSchema>;
 
 export async function getGovernmentSchemeInformation(input: GovernmentSchemeInformationInput): Promise<GovernmentSchemeInformationOutput> {
     try {

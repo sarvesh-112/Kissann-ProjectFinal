@@ -6,8 +6,9 @@ import { Dashboard } from '@/components/kisan/Dashboard';
 import { CropDiseaseDiagnosis } from '@/components/kisan/CropDiseaseDiagnosis';
 import { MarketPriceAnalysis } from '@/components/kisan/MarketPriceAnalysis';
 import { GovernmentSchemes } from '@/components/kisan/GovernmentSchemes';
+import { ChatAssistant } from './ChatAssistant';
 
-type View = 'dashboard' | 'disease' | 'market' | 'schemes';
+type View = 'dashboard' | 'disease' | 'market' | 'schemes' | 'chat';
 
 export function MainLayout() {
   const [activeView, setActiveView] = useState<View>('dashboard');
@@ -23,6 +24,8 @@ export function MainLayout() {
         return <div key="market" className="animate-in fade-in duration-500"><MarketPriceAnalysis /></div>;
       case 'schemes':
         return <div key="schemes" className="animate-in fade-in duration-500"><GovernmentSchemes /></div>;
+      case 'chat':
+        return <div key="chat" className="animate-in fade-in duration-500"><ChatAssistant /></div>;
       default:
         return <div key="dashboard-default" className="animate-in fade-in duration-500"><Dashboard setActiveView={setActiveView} /></div>;
     }

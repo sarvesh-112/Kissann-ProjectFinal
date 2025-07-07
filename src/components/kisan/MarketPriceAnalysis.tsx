@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -12,6 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 import { getMarketPriceAnalysis, MarketPriceAnalysisOutput } from '@/ai/flows/market-price-analysis';
 import { textToSpeech } from '@/ai/flows/tts';
 import { Loader2, BarChart3, Lightbulb, Mic, Volume2 } from 'lucide-react';
+import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
 
 const formSchema = z.object({
   crop: z.string().min(2, { message: 'Crop name must be at least 2 characters.' }),
@@ -23,6 +24,7 @@ export function MarketPriceAnalysis() {
   const [result, setResult] = useState<MarketPriceAnalysisOutput | null>(null);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [activeInput, setActiveInput] = useState<'crop' | 'location' | null>(null);
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -32,6 +34,22 @@ export function MarketPriceAnalysis() {
       location: '',
     },
   });
+
+  const { isListening, transcript, startListening, stopListening } = useSpeechRecognition({
+    onTranscript: (text) => {
+      if (activeInput) {
+        form.setValue(activeInput, text);
+        stopListening();
+        setActiveInput(null);
+      }
+    },
+  });
+
+  useEffect(() => {
+    if (transcript && activeInput) {
+        form.setValue(activeInput, transcript);
+    }
+  }, [transcript, activeInput, form]);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setLoading(true);
@@ -57,7 +75,7 @@ export function MarketPriceAnalysis() {
     setIsSpeaking(true);
     setAudioUrl(null);
     try {
-      const response = await textToSpeech(text);
+      const response = await textToSpeech(text, 'kn-IN');
       setAudioUrl(response.media);
     } catch (error) {
       console.error('Error generating speech:', error);
@@ -68,6 +86,16 @@ export function MarketPriceAnalysis() {
       });
     } finally {
       setIsSpeaking(false);
+    }
+  };
+
+  const toggleListening = (field: 'crop' | 'location') => {
+    if (isListening && activeInput === field) {
+      stopListening();
+      setActiveInput(null);
+    } else {
+      setActiveInput(field);
+      startListening();
     }
   };
 
@@ -96,8 +124,8 @@ export function MarketPriceAnalysis() {
                       <FormControl>
                         <div className="relative">
                           <Input placeholder="e.g., Tomato, Potato" {...field} />
-                          <Button variant="ghost" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8">
-                             <Mic className="h-4 w-4" />
+                          <Button variant="ghost" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8" type="button" onClick={() => toggleListening('crop')}>
+                             <Mic className={`h-4 w-4 ${isListening && activeInput === 'crop' ? 'text-destructive animate-pulse' : ''}`} />
                           </Button>
                         </div>
                       </FormControl>
@@ -112,7 +140,12 @@ export function MarketPriceAnalysis() {
                     <FormItem>
                       <FormLabel>Location / Market</FormLabel>
                       <FormControl>
-                         <Input placeholder="e.g., Hassan, Bangalore" {...field} />
+                         <div className="relative">
+                          <Input placeholder="e.g., Hassan, Bangalore" {...field} />
+                           <Button variant="ghost" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8" type="button" onClick={() => toggleListening('location')}>
+                             <Mic className={`h-4 w-4 ${isListening && activeInput === 'location' ? 'text-destructive animate-pulse' : ''}`} />
+                          </Button>
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>

@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 
 type NavLink = {
   label: string;
-  view: 'dashboard' | 'disease' | 'market' | 'schemes';
+  view: 'dashboard' | 'disease' | 'market' | 'schemes' | 'chat';
 };
 
 const navLinks: NavLink[] = [
@@ -16,11 +16,12 @@ const navLinks: NavLink[] = [
   { label: 'Crop Diagnosis', view: 'disease' },
   { label: 'Price Insights', view: 'market' },
   { label: 'Schemes', view: 'schemes' },
+  { label: 'AI Assistant', view: 'chat' },
 ];
 
 type HeaderProps = {
   activeView: string;
-  setActiveView: (view: 'dashboard' | 'disease' | 'market' | 'schemes') => void;
+  setActiveView: (view: 'dashboard' | 'disease' | 'market' | 'schemes' | 'chat') => void;
 };
 
 export function Header({ activeView, setActiveView }: HeaderProps) {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -12,6 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 import { getGovernmentSchemeInformation, GovernmentSchemeInformationOutput } from '@/ai/flows/government-scheme-information';
 import { textToSpeech } from '@/ai/flows/tts';
 import { Loader2, Landmark, FileText, Link, Mic, Volume2 } from 'lucide-react';
+import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
 
 const formSchema = z.object({
   query: z.string().min(10, { message: 'Please describe what you are looking for in at least 10 characters.' }),
@@ -30,6 +31,19 @@ export function GovernmentSchemes() {
       query: '',
     },
   });
+
+  const { isListening, transcript, startListening, stopListening } = useSpeechRecognition({
+    onTranscript: (text) => {
+      form.setValue('query', text);
+      stopListening();
+    },
+  });
+
+  useEffect(() => {
+    if (transcript) {
+      form.setValue('query', transcript);
+    }
+  }, [transcript, form]);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setLoading(true);
@@ -55,7 +69,7 @@ export function GovernmentSchemes() {
     setIsSpeaking(true);
     setAudioUrl(null);
     try {
-      const response = await textToSpeech(text);
+      const response = await textToSpeech(text, 'kn-IN');
       setAudioUrl(response.media);
     } catch (error) {
       console.error('Error generating speech:', error);
@@ -66,6 +80,14 @@ export function GovernmentSchemes() {
       });
     } finally {
       setIsSpeaking(false);
+    }
+  };
+
+  const toggleListening = () => {
+    if (isListening) {
+      stopListening();
+    } else {
+      startListening();
     }
   };
 
@@ -94,8 +116,8 @@ export function GovernmentSchemes() {
                       <FormControl>
                         <div className="relative">
                           <Textarea rows={5} placeholder="Type your question here..." {...field} />
-                           <Button variant="ghost" size="icon" className="absolute right-2 bottom-2 h-8 w-8">
-                            <Mic className="h-4 w-4" />
+                           <Button variant="ghost" size="icon" className="absolute right-2 bottom-2 h-8 w-8" type="button" onClick={toggleListening}>
+                            <Mic className={`h-4 w-4 ${isListening ? 'text-destructive animate-pulse' : ''}`} />
                           </Button>
                         </div>
                       </FormControl>
