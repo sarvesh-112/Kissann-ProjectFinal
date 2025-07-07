@@ -73,3 +73,24 @@ export const logSchemeQuery = async (
     console.error('Error logging scheme query to Firestore:', error);
   }
 };
+
+export const logSchemeQueryFailure = async (
+    query: string,
+    error: any
+) => {
+    try {
+        if (!db) return;
+        const { sessionId, language } = getSessionInfo();
+        // Convert error to a serializable format
+        const errorDetails = error instanceof Error ? { message: error.message, stack: error.stack } : { message: String(error) };
+        await addDoc(collection(db, 'errors/scheme_query_failures/logs'), {
+            query,
+            error: errorDetails,
+            sessionId,
+            language,
+            timestamp: serverTimestamp(),
+        });
+    } catch (logError) {
+        console.error('Critical: Failed to log a scheme query failure to Firestore:', logError);
+    }
+};

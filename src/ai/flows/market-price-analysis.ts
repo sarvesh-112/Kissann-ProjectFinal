@@ -19,48 +19,67 @@ export async function getMarketPriceAnalysis(input: MarketPriceAnalysisInput): P
         return result;
     } catch (error) {
         console.error("Error in getMarketPriceAnalysis flow:", error);
-        throw new Error("Failed to analyze market prices.");
+        return {
+            summary: `Price for ${input.crop} in ${input.location} is currently unavailable.`,
+            advice: 'Unable to fetch prices right now. We are working on it. Please try again later.',
+        };
     }
 }
 
-const getMarketData = ai.defineTool({
-  name: 'getMarketData',
-  description: 'Retrieves the current market data for a given crop and location.',
+const getMandiPrice = ai.defineTool({
+  name: 'getMandiPrice',
+  description: 'Retrieves the current market price and trend for a given crop and location.',
   inputSchema: z.object({
     crop: z.string().describe('The crop to get market prices for.'),
     location: z.string().describe('The location to get market prices for.'),
   }),
   outputSchema: z.object({
-    crop: z.string().describe('The crop for which the market data is retrieved.'),
-    location: z.string().describe('The location for which the market data is retrieved.'),
-    price: z.string().describe('The current market price for the crop in the given location.'),
-    trend: z.string().describe('The trend of the market price (e.g., increasing, decreasing, stable).'),
+    price: z.string().describe('The current market price per unit for the crop in the given location.'),
+    trend: z.string().describe('The recent trend of the market price (e.g., "Prices have dropped by 5% today", "Stable for the past week").'),
   }),
 }, async (input) => {
-  // Mock implementation for fetching market data from external APIs like AGMARKNET
-  console.log(`Fetching market data for ${input.crop} in ${input.location}`);
+  // In a real-world scenario, this would call a public API like AGMARKNET.
+  // For this demo, we are simulating an API call with mock data.
+  console.log(`Fetching real-time market data for ${input.crop} in ${input.location}`);
+  
+  // Simulate API call latency
+  await new Promise(resolve => setTimeout(resolve, 500));
+
+  // Simulate potential API failure
+  if (Math.random() < 0.1) { // 10% chance of failure
+    throw new Error("Mandi API is currently unavailable.");
+  }
+  
+  const prices = {
+      'tomato': 22,
+      'potato': 18,
+      'onion': 25,
+  };
+  const basePrice = prices[input.crop.toLowerCase() as keyof typeof prices] || 30;
+  const price = (basePrice + (Math.random() - 0.5) * 10).toFixed(2);
+  const trends = ["Prices have dropped by 5% today", "Prices are up 3% from yesterday", "Prices have been stable this week"];
+  const trend = trends[Math.floor(Math.random() * trends.length)];
+
   return {
-    crop: input.crop,
-    location: input.location,
-    price: `₹${(Math.random() * 20 + 15).toFixed(0)}/kg`,
-    trend: 'Prices have been stable this week, with a slight increase expected tomorrow. Selling now is a safe bet, but waiting a day might yield higher returns.',
+    price: `₹${price}/kg`,
+    trend: trend,
   };
 });
 
 const marketPriceAnalysisPrompt = ai.definePrompt({
   name: 'marketPriceAnalysisPrompt',
-  tools: [getMarketData],
+  tools: [getMandiPrice],
   input: {schema: MarketPriceAnalysisInputSchema},
   output: {schema: MarketPriceAnalysisOutputSchema},
-  prompt: `You are an agricultural expert advising farmers on market prices.
+  prompt: `You are an agricultural market expert for Indian farmers.
+  
+  A farmer wants to know about the market price for **{{crop}}** in **{{location}}**.
 
-  Based on the current market data, provide a summary of the prices and advice on whether to sell or wait.
-
-  The farmer is interested in {{crop}} prices in {{location}}.
-
-  Use the getMarketData tool to get the current market data.
-
-  Format the output as a JSON object with 'summary' and 'advice' keys.
+  1. Use the 'getMandiPrice' tool to get the latest price and trend data.
+  2. Based on this data, provide a clear, concise summary of the current situation.
+  3. Then, give a simple recommendation: should the farmer sell today, wait for a better price, or is it a neutral market? Explain your reasoning in one sentence.
+  
+  Format the output into a 'summary' and 'advice' field.
   `,
 });
 

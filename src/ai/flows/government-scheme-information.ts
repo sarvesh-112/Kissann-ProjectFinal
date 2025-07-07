@@ -6,7 +6,7 @@
  */
 
 import {ai} from '@/ai/genkit';
-import { logSchemeQuery } from '@/services/firestoreService';
+import { logSchemeQuery, logSchemeQueryFailure } from '@/services/firestoreService';
 import { 
     GovernmentSchemeInformationInputSchema, 
     GovernmentSchemeInformationOutputSchema, 
@@ -22,8 +22,15 @@ export async function getGovernmentSchemeInformation(input: GovernmentSchemeInfo
         logSchemeQuery(input.query, result);
         return result;
     } catch (error) {
-        console.error("Error in getGovernmentSchemeInformation flow:", error);
-        throw new Error("Failed to retrieve government scheme information.");
+        console.error("Error in getGovernmentSchemeInformation flow, returning fallback:", error);
+        // Do not await logging
+        logSchemeQueryFailure(input.query, error);
+        return {
+            scheme: "Information Not Available",
+            eligibility: "Could not determine eligibility at this time.",
+            summary: "We're currently facing a temporary issue retrieving scheme details. Please try your query again later.",
+            link: "https://agricoop.nic.in/"
+        };
     }
 }
 
