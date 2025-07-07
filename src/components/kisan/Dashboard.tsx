@@ -83,8 +83,9 @@ export function Dashboard({ setActiveView }: DashboardProps) {
                             <Image
                                 src="https://images.unsplash.com/photo-1600703129760-67c216b8ffb0?auto=format&fit=crop&w=800&q=80"
                                 alt="A healthy green plant"
-                                fill
-                                className="object-cover"
+                                width={800}
+                                height={600}
+                                className="object-cover w-full h-full rounded-t-2xl"
                                 data-ai-hint="healthy plant"
                             />
                         </div>
@@ -115,8 +116,9 @@ export function Dashboard({ setActiveView }: DashboardProps) {
                           <Image
                               src="https://images.unsplash.com/photo-1603252109303-a6f3bdaaa2a3?auto=format&fit=crop&w=800&q=80"
                               alt="A vibrant market stall with produce"
-                              fill
-                              className="object-cover"
+                              width={800}
+                              height={600}
+                              className="object-cover w-full h-full rounded-t-2xl"
                               data-ai-hint="market stall"
                           />
                       </div>
@@ -147,8 +149,9 @@ export function Dashboard({ setActiveView }: DashboardProps) {
                           <Image
                               src="https://images.unsplash.com/photo-1599488615732-2f27f624f720?auto=format&fit=crop&w=800&q=80"
                               alt="An illustration of a government building"
-                              fill
-                              className="object-cover"
+                              width={800}
+                              height={600}
+                              className="object-cover w-full h-full rounded-t-2xl"
                               data-ai-hint="government building"
                           />
                       </div>
