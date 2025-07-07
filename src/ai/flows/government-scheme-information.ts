@@ -1,13 +1,13 @@
 'use server';
 
 /**
- * @fileOverview An AI agent to find relevant government schemes for farmers using local search.
+ * @fileOverview An AI agent to find relevant government schemes for farmers by reasoning over a local JSON file.
  */
 
 import fs from 'fs';
 import path from 'path';
-import Fuse from 'fuse.js';
 import { ai } from '@/ai/genkit';
+import { z } from 'genkit';
 
 import {
   GovernmentSchemeInformationInputSchema,
@@ -24,19 +24,44 @@ import {
 // Load the schemes data from the JSON file.
 const SCHEMES_FILE = path.join(process.cwd(), 'src/data/govt-schemes.json');
 let schemes: any[] = [];
+let schemesJSON: string = '';
 try {
   const raw = fs.readFileSync(SCHEMES_FILE, 'utf-8');
   schemes = JSON.parse(raw);
+  schemesJSON = JSON.stringify(schemes, null, 2); // Keep the JSON string for the prompt
 } catch (error) {
   console.error('❌ Failed to load or parse govt-schemes.json:', error);
 }
 
-// Initialize Fuse.js for fuzzy searching
-const fuse = new Fuse(schemes, {
-  keys: ['scheme', 'summary', 'eligibility'],
-  threshold: 0.4, // Adjust for more or less strict matching
-  includeScore: true,
+// Define the input for the AI prompt, which includes the user query and the list of schemes.
+const SchemeFinderPromptInputSchema = z.object({
+  query: z.string(),
+  schemes: z.string(), // JSON string of all schemes
 });
+
+// The prompt instructs the AI to find the best match from the JSON data.
+const schemeFinderPrompt = ai.definePrompt({
+  name: 'schemeFinderPrompt',
+  input: { schema: SchemeFinderPromptInputSchema },
+  output: { schema: GovernmentSchemeInformationOutputSchema },
+  prompt: `You are an expert assistant for Indian farmers. Your task is to find the most relevant government scheme from the provided JSON data that matches the user's query.
+
+User's Query: "{{query}}"
+
+Here is the list of available government schemes in JSON format:
+\`\`\`json
+{{schemes}}
+\`\`\`
+
+Instructions:
+1.  Analyze the user's query to understand their need (e.g., "loan for seeds", "crop insurance", "help for organic farming").
+2.  Carefully search through the provided JSON data to find the *single best* scheme that addresses the user's need.
+3.  If you find a relevant scheme, return its details ("scheme", "summary", "eligibility", "link") in the exact output format.
+4.  If no scheme directly matches the query, use your best judgment to find the closest one.
+5.  If you are absolutely sure that no scheme is relevant, return an object with the scheme name "Not Found" and a helpful summary explaining that you could not find a match in the provided data.
+`,
+});
+
 
 const schemeFinderFlow = ai.defineFlow(
   {
@@ -45,27 +70,17 @@ const schemeFinderFlow = ai.defineFlow(
     outputSchema: GovernmentSchemeInformationOutputSchema,
   },
   async (input) => {
-    const results = fuse.search(input.query);
+    // We pass the user's query and the full list of schemes to the AI.
+    const { output } = await schemeFinderPrompt({
+      query: input.query,
+      schemes: schemesJSON,
+    });
 
-    if (results.length > 0) {
-      // The best match is the first result with the lowest score
-      const bestMatch = results[0].item;
-      return {
-        scheme: bestMatch.scheme,
-        summary: bestMatch.summary,
-        eligibility: bestMatch.eligibility,
-        link: bestMatch.link,
-      };
-    } else {
-      // If no suitable match is found, return a "Not Found" response.
-      // This is handled as a successful flow, but with a specific output.
-      return {
-        scheme: 'Not Found',
-        summary: `I could not find a specific scheme related to "${input.query}". Please try rephrasing your question or ask about a different topic.`,
-        eligibility: 'N/A',
-        link: 'https://www.india.gov.in/',
-      };
+    if (!output) {
+      throw new Error("The model did not return a valid scheme information object.");
     }
+    
+    return output;
   }
 );
 
@@ -78,7 +93,6 @@ export async function getGovernmentSchemeInformation(
       throw new Error('Government schemes data is not loaded or is empty.');
     }
     const result = await schemeFinderFlow(input);
-    // Log the successful query, even if it's a "Not Found" result
     logSchemeQuery(input.query, result);
     return result;
   } catch (error) {
