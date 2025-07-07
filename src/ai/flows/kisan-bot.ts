@@ -74,7 +74,6 @@ const diagnoseDiseaseFromSymptoms = ai.defineTool(
   }
 );
 
-// 🔧 Fix output schema: Gemini will now return { response: "text" }
 const kisanBotPrompt = ai.definePrompt({
   name: 'kisanBotPrompt',
   tools: [findMarketPrice, findGovernmentScheme, diagnoseDiseaseFromSymptoms],
@@ -146,7 +145,8 @@ export async function askKisanBot(
       language,
     });
 
-    const fallbackMessage = 'Sorry, I am having trouble connecting right now. Please try again in a moment.';
+    // Updated fallback message as requested
+    const fallbackMessage = "I'm unable to fetch a response right now. Try again shortly or ask something simpler.";
 
     logAgentFailure(query, error, language);
     return fallbackMessage;

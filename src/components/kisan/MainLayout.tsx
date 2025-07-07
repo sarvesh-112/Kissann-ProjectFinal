@@ -37,7 +37,7 @@ export function MainLayout() {
      <SidebarProvider>
         <AppSidebar activeView={activeView} setActiveView={setActiveView} />
         <SidebarInset className="flex flex-col min-h-screen">
-            <main className="flex-1">
+            <main className="flex-1 flex flex-col">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeView}
@@ -45,6 +45,7 @@ export function MainLayout() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -15 }}
                   transition={{ duration: 0.25 }}
+                  className="flex-1 flex flex-col"
                 >
                   {renderView()}
                 </motion.div>

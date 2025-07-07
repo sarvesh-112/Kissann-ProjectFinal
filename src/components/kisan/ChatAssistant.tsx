@@ -19,7 +19,6 @@ import { type SupportedLanguage } from '@/ai/schemas';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Label } from '../ui/label';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Skeleton } from '../ui/skeleton';
 
 type Message = {
   role: 'user' | 'assistant';
@@ -38,13 +37,42 @@ const languageToTtsCode: Record<SupportedLanguage, TtsLanguageCode> = {
   tamil: 'ta-IN',
 };
 
+const TypingIndicator = () => (
+    <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        className="flex items-start gap-3 justify-start"
+    >
+        <Bot className="h-8 w-8 text-primary shrink-0 rounded-full bg-primary/10 p-1.5" />
+        <div className="p-3 rounded-2xl bg-secondary flex items-center gap-1.5 shadow-md rounded-bl-none">
+            <motion.div
+                className="h-2 w-2 bg-muted-foreground rounded-full"
+                animate={{ y: [0, -4, 0] }}
+                transition={{ duration: 1, repeat: Infinity, ease: "easeInOut", delay: 0 }}
+            />
+            <motion.div
+                className="h-2 w-2 bg-muted-foreground rounded-full"
+                animate={{ y: [0, -4, 0] }}
+                transition={{ duration: 1, repeat: Infinity, ease: "easeInOut", delay: 0.2 }}
+            />
+            <motion.div
+                className="h-2 w-2 bg-muted-foreground rounded-full"
+                animate={{ y: [0, -4, 0] }}
+                transition={{ duration: 1, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
+            />
+        </div>
+    </motion.div>
+);
+
+
 export function ChatAssistant() {
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [language, setLanguage] = useState<SupportedLanguage>('english');
   const { toast } = useToast();
-  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -63,7 +91,7 @@ export function ChatAssistant() {
         toast({
             variant: 'destructive',
             title: 'Speech Error',
-            description: "Couldn't start voice input. Please check your microphone permissions.",
+            description: "Couldn't start voice input. Please check microphone permissions.",
         });
     }
   });
@@ -74,12 +102,14 @@ export function ChatAssistant() {
     }
   }, [transcript, form]);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
   useEffect(() => {
-    scrollToBottom();
+    // Auto-scroll to the bottom of the chat on new messages
+    if (scrollAreaRef.current) {
+      scrollAreaRef.current.scrollTo({
+        top: scrollAreaRef.current.scrollHeight,
+        behavior: 'smooth',
+      });
+    }
   }, [messages, loading]);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
@@ -95,7 +125,7 @@ export function ChatAssistant() {
       handleSpeak(assistantResponse);
     } catch (error) {
       console.error('Error asking assistant:', error);
-      const errorMessage: Message = { role: 'assistant', text: "Sorry, I encountered an error. Please try again.", timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) };
+      const errorMessage: Message = { role: 'assistant', text: "Sorry, an unexpected error occurred. Please try again.", timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) };
       setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setLoading(false);
@@ -105,14 +135,9 @@ export function ChatAssistant() {
   const handleSpeak = async (text: string) => {
     if (!text) return;
     setAudioUrl(null);
-    try {
-      const response = await textToSpeech(text, languageToTtsCode[language]);
-      if (response?.media) {
+    const response = await textToSpeech(text, languageToTtsCode[language]);
+    if (response?.media) {
         setAudioUrl(response.media);
-      }
-    } catch (error) {
-      // Gracefully handle TTS errors (e.g., quota exceeded) without notifying the user
-      console.error('Error during TTS call, handled gracefully:', error);
     }
   };
 
@@ -126,7 +151,7 @@ export function ChatAssistant() {
 
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 h-[calc(100vh-80px)] flex flex-col">
+    <div className="p-4 sm:p-6 lg:p-8 flex flex-col h-full">
        <header className="mb-6 flex flex-wrap justify-between items-center gap-4">
         <div>
             <h1 className="font-headline text-4xl font-bold tracking-tight">KisanBot</h1>
@@ -152,15 +177,15 @@ export function ChatAssistant() {
       </header>
       <Card className="flex-1 flex flex-col shadow-xl rounded-2xl overflow-hidden">
         <CardContent className="p-0 flex-1 flex flex-col">
-           <ScrollArea className="flex-1 p-4">
-             <div className="space-y-6">
+           <ScrollArea className="flex-1" ref={scrollAreaRef}>
+             <div className="space-y-6 p-4">
                 <AnimatePresence>
                 {messages.map((message, index) => (
                     <motion.div 
-                        key={index}
+                        key={`${message.timestamp}-${index}`}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.3 }}
+                        transition={{ duration: 0.3, ease: 'easeOut' }}
                         className={cn("flex items-start gap-3", message.role === 'user' ? 'justify-end' : 'justify-start')}
                     >
                     {message.role === 'assistant' && <Bot className="h-8 w-8 text-primary shrink-0 rounded-full bg-primary/10 p-1.5" />}
@@ -174,20 +199,7 @@ export function ChatAssistant() {
                     </motion.div>
                 ))}
                 </AnimatePresence>
-                {loading && (
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.3 }}
-                        className="flex items-start gap-3 justify-start"
-                    >
-                        <Bot className="h-8 w-8 text-primary shrink-0 rounded-full bg-primary/10 p-1.5" />
-                        <div className="p-3 rounded-2xl bg-secondary flex items-center gap-1.5 shadow-md rounded-bl-none">
-                           <Skeleton className="h-2 w-16" />
-                        </div>
-                    </motion.div>
-                )}
-                <div ref={messagesEndRef} />
+                {loading && <TypingIndicator />}
              </div>
            </ScrollArea>
            <div className="p-4 border-t bg-background/80">
@@ -208,7 +220,7 @@ export function ChatAssistant() {
                     <Button type="button" variant="outline" size="icon" onClick={toggleListening} disabled={loading} className='shrink-0 rounded-full'>
                         <Mic className={`h-5 w-5 ${isListening ? 'text-destructive animate-pulse' : ''}`} />
                     </Button>
-                    <Button type="submit" size="icon" disabled={loading} className='shrink-0 rounded-full'>
+                    <Button type="submit" size="icon" disabled={loading || !form.formState.isValid} className='shrink-0 rounded-full'>
                         <Send className="h-5 w-5" />
                     </Button>
                 </form>
