@@ -6,7 +6,8 @@ import type {
     DiagnoseCropDiseaseOutput,
     MarketPriceAnalysisInput,
     MarketPriceAnalysisOutput,
-    GovernmentSchemeInformationOutput
+    GovernmentSchemeInformationOutput,
+    SupportedLanguage
 } from '@/ai/schemas';
 
 // A placeholder for session management. In a real app, you'd get this from user auth.
@@ -98,7 +99,7 @@ export const logSchemeQueryFailure = async (
 export const logAgentInteraction = async (
     userInput: string,
     assistantReply: string,
-    language: string
+    language: SupportedLanguage
 ) => {
     try {
         if (!db) return;
@@ -112,5 +113,29 @@ export const logAgentInteraction = async (
         });
     } catch (error) {
         console.error('Error logging agent interaction to Firestore:', error);
+    }
+};
+
+export const logAgentFailure = async (
+    userInput: string,
+    error: any,
+    language: SupportedLanguage
+) => {
+    try {
+        if (!db) return;
+        const { sessionId } = getSessionInfo();
+        const errorDetails = error instanceof Error ? 
+            { message: error.message, stack: error.stack } : 
+            { message: String(error) };
+
+        await addDoc(collection(db, 'assistant_failures'), {
+            user_input: userInput,
+            error: errorDetails,
+            sessionId,
+            language,
+            timestamp: serverTimestamp(),
+        });
+    } catch (logError) {
+        console.error('CRITICAL: Failed to log agent failure to Firestore:', logError);
     }
 };

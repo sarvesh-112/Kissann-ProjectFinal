@@ -20,7 +20,7 @@ import {
     SupportedLanguageSchema,
     type SupportedLanguage
 } from '@/ai/schemas';
-import { logAgentInteraction } from '@/services/firestoreService';
+import { logAgentInteraction, logAgentFailure } from '@/services/firestoreService';
 
 
 const AssistantInputSchema = z.object({
@@ -110,17 +110,24 @@ const kisanBotFlow = ai.defineFlow(
 export async function askKisanBot(query: string, language: SupportedLanguage = 'english'): Promise<string> {
     try {
         const result = await kisanBotFlow({ query, language });
+         if (!result) {
+            throw new Error("Received an empty or invalid response from the assistant flow.");
+        }
         return result;
     } catch (error) {
-        // Log detailed error for debugging. This catch block is a final safety net.
-        // If this is triggered, it means an error occurred that wasn't caught by a tool's specific fallback.
-        console.error("Critical Error in askKisanBot flow. This should not happen if tools have proper fallbacks.", error);
-        
-        const errorMessage = error instanceof Error ? error.message : String(error);
+        // Detailed logging for debugging.
+        console.error("Error in askKisanBot:", {
+            message: error instanceof Error ? error.message : String(error),
+            stack: error instanceof Error ? error.stack : 'No stack available',
+            input: query,
+            language: language,
+        });
+
         const fallbackMessage = "Sorry, I am having trouble connecting right now. Please try again in a moment.";
 
-        // Log the failure to Firestore for monitoring
-        logAgentInteraction(query, `Error: ${errorMessage}`, language);
+        // Log the failure to a dedicated Firestore collection for monitoring.
+        // Do not await this to avoid delaying the user response.
+        logAgentFailure(query, error, language);
         
         return fallbackMessage;
     }
