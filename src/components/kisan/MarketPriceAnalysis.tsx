@@ -11,8 +11,10 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { useToast } from '@/hooks/use-toast';
 import { getMarketPriceAnalysis, MarketPriceAnalysisOutput } from '@/ai/flows/market-price-analysis';
 import { textToSpeech } from '@/ai/flows/tts';
-import { Loader2, BarChart3, Lightbulb, Mic, Volume2, TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { BarChart3, Lightbulb, Mic, Volume2, TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
+import { motion } from 'framer-motion';
+import { Skeleton } from '../ui/skeleton';
 
 const formSchema = z.object({
   crop: z.string().min(2, { message: 'Crop name must be at least 2 characters.' }),
@@ -55,6 +57,10 @@ export function MarketPriceAnalysis() {
         setActiveInput(null);
       }
     },
+    onError: (error) => {
+        console.error("Speech recognition error:", error);
+        // Do not show a toast for this error
+    }
   });
 
   useEffect(() => {
@@ -109,19 +115,19 @@ export function MarketPriceAnalysis() {
   };
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 space-y-6">
+    <div className="p-4 sm:p-6 lg:p-8 space-y-8">
       <header>
         <h1 className="font-headline text-4xl font-bold tracking-tight">Market Price Analysis</h1>
-        <p className="text-muted-foreground mt-2 font-body">Enter a crop and location to get AI-powered price analysis and advice.</p>
+        <p className="text-muted-foreground mt-2">Enter a crop and location to get AI-powered price analysis and advice.</p>
       </header>
 
       <div className="grid gap-8 md:grid-cols-2">
-        <Card className="shadow-md hover:shadow-lg transition-shadow">
+        <Card className="shadow-lg hover:shadow-2xl transition-shadow duration-300 rounded-2xl">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <CardHeader>
                 <CardTitle className="font-headline text-2xl">Check Market Prices</CardTitle>
-                <CardDescription className="font-body">Find out the current market rates for your produce.</CardDescription>
+                <CardDescription>Find out the current market rates for your produce.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <FormField
@@ -129,10 +135,10 @@ export function MarketPriceAnalysis() {
                   name="crop"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="font-body">Crop Name</FormLabel>
+                      <FormLabel>Crop Name</FormLabel>
                       <FormControl>
                         <div className="relative">
-                          <Input placeholder="e.g., Tomato, Potato" {...field} />
+                          <Input placeholder="e.g., Tomato, Potato" {...field} className="rounded-lg" />
                           <Button variant="ghost" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8" type="button" onClick={() => toggleListening('crop')}>
                              <Mic className={`h-4 w-4 ${isListening && activeInput === 'crop' ? 'text-destructive animate-pulse' : ''}`} />
                           </Button>
@@ -147,10 +153,10 @@ export function MarketPriceAnalysis() {
                   name="location"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="font-body">Location / Market</FormLabel>
+                      <FormLabel>Location / Market</FormLabel>
                       <FormControl>
                          <div className="relative">
-                          <Input placeholder="e.g., Hassan, Bangalore" {...field} />
+                          <Input placeholder="e.g., Hassan, Bangalore" {...field} className="rounded-lg" />
                            <Button variant="ghost" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8" type="button" onClick={() => toggleListening('location')}>
                              <Mic className={`h-4 w-4 ${isListening && activeInput === 'location' ? 'text-destructive animate-pulse' : ''}`} />
                           </Button>
@@ -162,15 +168,8 @@ export function MarketPriceAnalysis() {
                 />
               </CardContent>
               <CardFooter>
-                <Button type="submit" disabled={loading} className="font-semibold">
-                  {loading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Analyzing...
-                    </>
-                  ) : (
-                    'Get Analysis'
-                  )}
+                <Button type="submit" disabled={loading} size="lg" className="font-bold w-full">
+                  {loading ? 'Analyzing...' : 'Get Analysis'}
                 </Button>
               </CardFooter>
             </form>
@@ -179,25 +178,41 @@ export function MarketPriceAnalysis() {
 
         <div className="space-y-6">
            {loading && (
-             <Card className="flex flex-col items-center justify-center h-full shadow-md">
-              <CardContent className="text-center p-6">
-                <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
-                <p className="font-semibold font-headline">Fetching Market Data...</p>
-                <p className="text-sm text-muted-foreground font-body">Our AI is analyzing the latest prices.</p>
-              </CardContent>
+             <Card className="flex flex-col h-full shadow-lg rounded-2xl animate-pulse p-6">
+                <div className="flex items-start gap-4 mb-6">
+                    <Skeleton className="h-10 w-10 rounded-lg" />
+                    <div className="space-y-2 flex-1">
+                    <Skeleton className="h-6 w-3/4" />
+                    <Skeleton className="h-4 w-1/2" />
+                    </div>
+                </div>
+                <div className="space-y-4">
+                    <Skeleton className="h-5 w-1/3" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-5/6" />
+                    <Skeleton className="h-5 w-1/4 mt-4" />
+                    <Skeleton className="h-4 w-full" />
+                </div>
             </Card>
           )}
 
           {result && (
-             <Card className="bg-gradient-to-br from-card to-secondary/50 shadow-lg">
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+            >
+             <Card className="bg-gradient-to-br from-card to-secondary/30 shadow-xl rounded-2xl">
               <CardHeader className="flex flex-row items-start gap-4">
-                 <BarChart3 className="h-8 w-8 text-primary shrink-0" />
+                 <div className="bg-primary/10 p-3 rounded-xl">
+                    <BarChart3 className="h-6 w-6 text-primary shrink-0" />
+                 </div>
                 <div>
                     <CardTitle className="font-headline text-2xl">Price Analysis</CardTitle>
-                    <CardDescription className="font-body">For {form.getValues('crop')} in {form.getValues('location')}</CardDescription>
+                    <CardDescription>For {form.getValues('crop')} in {form.getValues('location')}</CardDescription>
                 </div>
                  <Button variant="ghost" size="icon" className="ml-auto" onClick={() => handleSpeak(result.summary + '. ' + result.advice)} disabled={isSpeaking}>
-                    {isSpeaking ? <Loader2 className="h-5 w-5 animate-spin" /> : <Volume2 className="h-5 w-5" />}
+                    <Volume2 className="h-5 w-5" />
                 </Button>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -205,17 +220,18 @@ export function MarketPriceAnalysis() {
                   <h3 className="font-headline text-lg font-semibold flex items-center gap-2">
                     Price Summary <TrendIndicator summary={result.summary} />
                   </h3>
-                  <p className="text-muted-foreground whitespace-pre-wrap font-body">{result.summary}</p>
+                  <p className="text-muted-foreground whitespace-pre-wrap mt-1">{result.summary}</p>
                 </div>
                 <div>
                    <h3 className="font-headline text-lg font-semibold flex items-center gap-2">
-                    <Lightbulb className="h-5 w-5 text-accent-foreground stroke-accent" />
+                    <Lightbulb className="h-5 w-5 text-yellow-500" />
                     AI-Powered Advice
                   </h3>
-                  <p className="text-foreground font-medium pl-7 font-body">{result.advice}</p>
+                  <p className="text-foreground font-medium mt-1">{result.advice}</p>
                 </div>
               </CardContent>
             </Card>
+            </motion.div>
           )}
           {audioUrl && (
             <audio autoPlay src={audioUrl} onEnded={() => setAudioUrl(null)} className="hidden" />

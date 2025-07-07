@@ -84,7 +84,7 @@ export const logSchemeQueryFailure = async (
         const { sessionId, language } = getSessionInfo();
         // Convert error to a serializable format
         const errorDetails = error instanceof Error ? { message: error.message, stack: error.stack } : { message: String(error) };
-        await addDoc(collection(db, 'errors/scheme_query_failures/logs'), {
+        await addDoc(collection(db, 'errors', 'scheme_query_failures'), {
             query,
             error: errorDetails,
             sessionId,

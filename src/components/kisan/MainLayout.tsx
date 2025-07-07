@@ -8,6 +8,8 @@ import { CropDiseaseDiagnosis } from '@/components/kisan/CropDiseaseDiagnosis';
 import { MarketPriceAnalysis } from '@/components/kisan/MarketPriceAnalysis';
 import { GovernmentSchemes } from '@/components/kisan/GovernmentSchemes';
 import { ChatAssistant } from './ChatAssistant';
+import { Button } from '../ui/button';
+import { AnimatePresence, motion } from 'framer-motion';
 
 type View = 'dashboard' | 'disease' | 'market' | 'schemes' | 'chat';
 
@@ -15,20 +17,19 @@ export function MainLayout() {
   const [activeView, setActiveView] = useState<View>('dashboard');
 
   const renderView = () => {
-    // The key forces a re-render and re-trigger of animations when the view changes
     switch (activeView) {
       case 'dashboard':
-        return <div key="dashboard" className="animate-in fade-in duration-500"><Dashboard setActiveView={setActiveView} /></div>;
+        return <Dashboard setActiveView={setActiveView} />;
       case 'disease':
-        return <div key="disease" className="animate-in fade-in duration-500"><CropDiseaseDiagnosis /></div>;
+        return <CropDiseaseDiagnosis />;
       case 'market':
-        return <div key="market" className="animate-in fade-in duration-500"><MarketPriceAnalysis /></div>;
+        return <MarketPriceAnalysis />;
       case 'schemes':
-        return <div key="schemes" className="animate-in fade-in duration-500"><GovernmentSchemes /></div>;
+        return <GovernmentSchemes />;
       case 'chat':
-        return <div key="chat" className="animate-in fade-in duration-500"><ChatAssistant /></div>;
+        return <ChatAssistant />;
       default:
-        return <div key="dashboard-default" className="animate-in fade-in duration-500"><Dashboard setActiveView={setActiveView} /></div>;
+        return <Dashboard setActiveView={setActiveView} />;
     }
   };
 
@@ -37,11 +38,27 @@ export function MainLayout() {
         <AppSidebar activeView={activeView} setActiveView={setActiveView} />
         <SidebarInset className="flex flex-col min-h-screen">
             <main className="flex-1">
-                {renderView()}
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeView}
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -15 }}
+                  transition={{ duration: 0.25 }}
+                >
+                  {renderView()}
+                </motion.div>
+              </AnimatePresence>
             </main>
-            <footer className="py-4 px-6 text-center text-xs text-muted-foreground border-t bg-background">
+            <footer className="py-6 px-6 text-center text-sm text-muted-foreground border-t bg-background">
+                <div className='flex justify-center items-center gap-4 mb-2'>
+                    <Button variant="link" size="sm" className="text-muted-foreground">About</Button>
+                    <Button variant="link" size="sm" className="text-muted-foreground">Privacy</Button>
+                    <Button variant="link" size="sm" className="text-muted-foreground">Contact</Button>
+                </div>
                 <p className="font-semibold">A Procedural Prospectors Creation</p>
-                <p className="mt-1 font-body">Developed by Sarvesh Ganesan</p>
+                <p className="mt-1">Developed by Sarvesh Ganesan</p>
+                <p className="text-xs mt-2">Powered by Gemini + Firebase</p>
             </footer>
         </SidebarInset>
     </SidebarProvider>

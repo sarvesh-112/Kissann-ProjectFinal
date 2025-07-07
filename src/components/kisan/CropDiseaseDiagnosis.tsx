@@ -12,9 +12,11 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { useToast } from '@/hooks/use-toast';
 import { diagnoseCropDisease, DiagnoseCropDiseaseOutput } from '@/ai/flows/crop-disease-diagnosis';
 import { textToSpeech } from '@/ai/flows/tts';
-import { Loader2, Sparkles, AlertTriangle, Mic, Volume2 } from 'lucide-react';
+import { Sparkles, AlertTriangle, Mic, Volume2, UploadCloud, Leaf } from 'lucide-react';
 import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
 import { Textarea } from '../ui/textarea';
+import { motion } from 'framer-motion';
+import { Skeleton } from '../ui/skeleton';
 
 const formSchema = z.object({
   image: z.any().refine((file) => file instanceof File, 'Image is required.'),
@@ -34,6 +36,10 @@ export function CropDiseaseDiagnosis() {
       form.setValue('description', text);
       stopListening();
     },
+    onError: (error) => {
+        console.error("Speech recognition error:", error);
+        // Do not show a toast for this error
+    }
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -118,48 +124,60 @@ export function CropDiseaseDiagnosis() {
   };
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 space-y-6">
+    <div className="p-4 sm:p-6 lg:p-8 space-y-8">
       <header>
         <h1 className="font-headline text-4xl font-bold tracking-tight">Crop Disease Diagnosis</h1>
-        <p className="text-muted-foreground mt-2 font-body">Upload an image of an affected crop to get an AI-powered diagnosis and remedy.</p>
+        <p className="text-muted-foreground mt-2">Upload an image of an affected crop to get an AI-powered diagnosis and remedy.</p>
       </header>
 
       <div className="grid gap-8 md:grid-cols-2">
-        <Card className="shadow-md hover:shadow-lg transition-shadow">
+        <Card className="shadow-lg hover:shadow-2xl transition-shadow duration-300 rounded-2xl">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <CardHeader>
                 <CardTitle className="font-headline text-2xl">Upload Crop Image</CardTitle>
-                <CardDescription className="font-body">Select a clear image of the crop showing signs of disease.</CardDescription>
+                <CardDescription>Select a clear image of the crop showing signs of disease.</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <FormField
+              <CardContent className="space-y-6">
+                 <FormField
                   control={form.control}
                   name="image"
                   render={() => (
-                    <FormItem>
-                      <FormLabel className="font-body">Crop Image</FormLabel>
-                      <FormControl>
-                        <Input type="file" accept="image/*" onChange={handleFileChange} className="file:text-primary"/>
-                      </FormControl>
+                     <FormItem>
+                      <FormLabel className="sr-only">Crop Image</FormLabel>
+                        <FormControl>
+                            <div className="relative border-2 border-dashed border-muted-foreground/30 rounded-xl p-6 hover:border-primary transition-colors cursor-pointer text-center">
+                                <UploadCloud className="mx-auto h-12 w-12 text-muted-foreground/50" />
+                                <p className="mt-2 text-sm text-muted-foreground">
+                                    <span className="font-semibold text-primary">Click to upload</span> or drag and drop
+                                </p>
+                                <p className="text-xs text-muted-foreground">PNG, JPG, or WEBP</p>
+                                <Input type="file" accept="image/*" onChange={handleFileChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                            </div>
+                        </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+
                 {preview && (
-                  <div className="mt-4 relative w-full h-64 rounded-md overflow-hidden border">
+                  <motion.div 
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: '16rem' }}
+                    className="mt-4 relative w-full h-64 rounded-lg overflow-hidden border shadow-inner"
+                  >
                     <Image src={preview} alt="Crop preview" layout="fill" objectFit="cover" />
-                  </div>
+                  </motion.div>
                 )}
                  <FormField
                   control={form.control}
                   name="description"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="font-body">Or describe the issue (optional)</FormLabel>
+                      <FormLabel>Or describe the issue (optional)</FormLabel>
                       <FormControl>
                         <div className="relative">
-                          <Textarea placeholder="e.g., 'The leaves have yellow spots and are wilting...'" {...field} />
+                          <Textarea className="rounded-lg" placeholder="e.g., 'The leaves have yellow spots and are wilting...'" {...field} />
                           <Button variant="ghost" size="icon" className="absolute right-2 bottom-2 h-8 w-8" type="button" onClick={toggleListening}>
                             <Mic className={`h-4 w-4 ${isListening ? 'text-destructive animate-pulse' : ''}`} />
                           </Button>
@@ -171,15 +189,8 @@ export function CropDiseaseDiagnosis() {
                 />
               </CardContent>
               <CardFooter>
-                <Button type="submit" disabled={loading} className="font-semibold">
-                  {loading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Diagnosing...
-                    </>
-                  ) : (
-                    "Get Diagnosis"
-                  )}
+                <Button type="submit" disabled={loading} size="lg" className="font-bold w-full">
+                  {loading ? 'Diagnosing...' : 'Get Diagnosis'}
                 </Button>
               </CardFooter>
             </form>
@@ -188,41 +199,50 @@ export function CropDiseaseDiagnosis() {
 
         <div className="space-y-6">
           {loading && (
-             <Card className="flex flex-col items-center justify-center h-full shadow-md">
+             <Card className="flex flex-col items-center justify-center h-full shadow-lg rounded-2xl animate-pulse">
               <CardContent className="text-center p-6">
-                <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
-                <p className="font-semibold font-headline">Analyzing Image...</p>
-                <p className="text-sm text-muted-foreground font-body">Our AI is looking at your crop.</p>
+                 <Skeleton className="h-16 w-16 rounded-full mx-auto mb-4" />
+                 <Skeleton className="h-6 w-48 mx-auto mb-2" />
+                 <Skeleton className="h-4 w-64 mx-auto" />
               </CardContent>
             </Card>
           )}
 
           {result && (
-            <Card className="bg-gradient-to-br from-card to-secondary/50 shadow-lg">
-              <CardHeader className="flex flex-row items-start gap-4">
-                <Sparkles className="h-8 w-8 text-accent-foreground stroke-accent shrink-0" />
-                <div>
-                  <CardTitle className="font-headline text-2xl">Diagnosis Result</CardTitle>
-                  <CardDescription className="font-body">Here's what our AI found.</CardDescription>
-                </div>
-                <Button variant="ghost" size="icon" className="ml-auto" onClick={() => handleSpeak(result.disease + '. ' + result.remedy)} disabled={isSpeaking}>
-                    {isSpeaking ? <Loader2 className="h-5 w-5 animate-spin" /> : <Volume2 className="h-5 w-5" />}
-                </Button>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <h3 className="font-headline text-lg font-semibold flex items-center gap-2">
-                    <AlertTriangle className="h-5 w-5 text-destructive" />
-                    Detected Issue
-                  </h3>
-                  <p className="text-lg text-foreground pl-7 font-body">{result.disease}</p>
-                </div>
-                <div>
-                  <h3 className="font-headline text-lg font-semibold">Recommended Remedy</h3>
-                  <p className="text-muted-foreground whitespace-pre-wrap font-body">{result.remedy}</p>
-                </div>
-              </CardContent>
-            </Card>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+                <Card className="bg-gradient-to-br from-card to-secondary/30 shadow-xl rounded-2xl">
+                <CardHeader className="flex flex-row items-start gap-4">
+                    <Sparkles className="h-8 w-8 text-yellow-500 shrink-0" />
+                    <div>
+                    <CardTitle className="font-headline text-2xl">Diagnosis Result</CardTitle>
+                    <CardDescription>Here's what our AI found.</CardDescription>
+                    </div>
+                    <Button variant="ghost" size="icon" className="ml-auto" onClick={() => handleSpeak(result.disease + '. ' + result.remedy)} disabled={isSpeaking}>
+                        <Volume2 className="h-5 w-5" />
+                    </Button>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <div>
+                    <h3 className="font-headline text-lg font-semibold flex items-center gap-2">
+                        <AlertTriangle className="h-5 w-5 text-destructive" />
+                        Detected Issue
+                    </h3>
+                    <p className="text-lg text-foreground pl-7">{result.disease}</p>
+                    </div>
+                    <div>
+                    <h3 className="font-headline text-lg font-semibold flex items-center gap-2">
+                      <Leaf className="h-5 w-5 text-primary" />
+                      Recommended Remedy
+                    </h3>
+                    <p className="text-muted-foreground whitespace-pre-wrap pl-7">{result.remedy}</p>
+                    </div>
+                </CardContent>
+                </Card>
+            </motion.div>
           )}
           {audioUrl && (
             <audio autoPlay src={audioUrl} onEnded={() => setAudioUrl(null)} className="hidden" />

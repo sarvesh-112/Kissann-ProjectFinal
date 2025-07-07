@@ -18,7 +18,8 @@ import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
 import { type SupportedLanguage } from '@/ai/schemas';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Label } from '../ui/label';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Skeleton } from '../ui/skeleton';
 
 type Message = {
   role: 'user' | 'assistant';
@@ -57,6 +58,14 @@ export function ChatAssistant() {
       form.handleSubmit(onSubmit)(); 
     },
     lang: languageToTtsCode[language],
+    onError: (error) => {
+        console.error("Speech recognition error:", error);
+        toast({
+            variant: 'destructive',
+            title: 'Speech Error',
+            description: "Couldn't start voice input. Please check your microphone permissions.",
+        });
+    }
   });
 
    useEffect(() => {
@@ -77,7 +86,7 @@ export function ChatAssistant() {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, loading]);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     const userMessage: Message = { role: 'user', text: data.query, timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) };
@@ -92,11 +101,6 @@ export function ChatAssistant() {
       handleSpeak(assistantResponse);
     } catch (error) {
       console.error('Error asking assistant:', error);
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: 'Failed to get a response. Please try again.',
-      });
       const errorMessage: Message = { role: 'assistant', text: "Sorry, I encountered an error. Please try again.", timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) };
       setMessages((prev) => [...prev, errorMessage]);
     } finally {
@@ -113,6 +117,7 @@ export function ChatAssistant() {
         setAudioUrl(response.media);
       }
     } catch (error) {
+      // Gracefully handle TTS errors (e.g., quota exceeded) without notifying the user
       console.error('Error during TTS call, handled gracefully:', error);
     }
   };
@@ -131,10 +136,10 @@ export function ChatAssistant() {
        <header className="mb-6 flex flex-wrap justify-between items-center gap-4">
         <div>
             <h1 className="font-headline text-4xl font-bold tracking-tight">KisanBot</h1>
-            <p className="text-muted-foreground mt-2 font-body">Your AI companion for farming.</p>
+            <p className="text-muted-foreground mt-2">Your AI companion for farming.</p>
         </div>
         <div className='flex flex-col gap-2'>
-            <Label htmlFor="language-select" className='font-body'>Language</Label>
+            <Label htmlFor="language-select">Language</Label>
             <Select 
                 value={language}
                 onValueChange={(value) => setLanguage(value as SupportedLanguage)}
@@ -151,44 +156,43 @@ export function ChatAssistant() {
             </Select>
         </div>
       </header>
-      <Card className="flex-1 flex flex-col shadow-lg overflow-hidden">
+      <Card className="flex-1 flex flex-col shadow-xl rounded-2xl overflow-hidden">
         <CardContent className="p-0 flex-1 flex flex-col">
            <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
              <div className="space-y-6">
-               {messages.map((message, index) => (
-                <div key={index} className={cn("flex items-start gap-3", message.role === 'user' ? 'justify-end' : 'justify-start')}>
-                  {message.role === 'assistant' && <Bot className="h-8 w-8 text-primary shrink-0 rounded-full bg-primary/10 p-1.5" />}
-                  <div className={cn("p-3 rounded-lg max-w-xl shadow-sm", message.role === 'user' ? 'bg-primary text-primary-foreground rounded-br-none' : 'bg-secondary rounded-bl-none')}>
-                    <p className="text-sm font-body">{message.text}</p>
-                    <p className={cn("text-xs mt-1.5", message.role === 'user' ? 'text-primary-foreground/70 text-right' : 'text-muted-foreground text-left')}>
-                        {message.timestamp}
-                    </p>
-                  </div>
-                   {message.role === 'user' && <User className="h-8 w-8 text-muted-foreground shrink-0 bg-muted rounded-full p-1.5" />}
-                </div>
-              ))}
-              {loading && (
-                 <div className="flex items-start gap-3 justify-start">
-                    <Bot className="h-8 w-8 text-primary shrink-0 rounded-full bg-primary/10 p-1.5" />
-                    <div className="p-3 rounded-lg bg-secondary flex items-center gap-1.5 shadow-sm rounded-bl-none">
-                        <motion.div
-                            className="h-2 w-2 bg-primary/50 rounded-full"
-                            animate={{ scale: [1, 1.2, 1], opacity: [0.7, 1, 0.7] }}
-                            transition={{ duration: 1, repeat: Infinity }}
-                        />
-                        <motion.div
-                            className="h-2 w-2 bg-primary/50 rounded-full"
-                            animate={{ scale: [1, 1.2, 1], opacity: [0.7, 1, 0.7] }}
-                            transition={{ duration: 1, repeat: Infinity, delay: 0.2 }}
-                        />
-                        <motion.div
-                            className="h-2 w-2 bg-primary/50 rounded-full"
-                            animate={{ scale: [1, 1.2, 1], opacity: [0.7, 1, 0.7] }}
-                            transition={{ duration: 1, repeat: Infinity, delay: 0.4 }}
-                        />
+                <AnimatePresence>
+                {messages.map((message, index) => (
+                    <motion.div 
+                        key={index}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className={cn("flex items-start gap-3", message.role === 'user' ? 'justify-end' : 'justify-start')}
+                    >
+                    {message.role === 'assistant' && <Bot className="h-8 w-8 text-primary shrink-0 rounded-full bg-primary/10 p-1.5" />}
+                    <div className={cn("p-3 rounded-2xl max-w-xl shadow-md", message.role === 'user' ? 'bg-primary text-primary-foreground rounded-br-none' : 'bg-secondary rounded-bl-none')}>
+                        <p className="text-sm">{message.text}</p>
+                        <p className={cn("text-xs mt-1.5", message.role === 'user' ? 'text-primary-foreground/70 text-right' : 'text-muted-foreground text-left')}>
+                            {message.timestamp}
+                        </p>
                     </div>
-                 </div>
-              )}
+                    {message.role === 'user' && <User className="h-8 w-8 text-muted-foreground shrink-0 bg-muted rounded-full p-1.5" />}
+                    </motion.div>
+                ))}
+                </AnimatePresence>
+                {loading && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="flex items-start gap-3 justify-start"
+                    >
+                        <Bot className="h-8 w-8 text-primary shrink-0 rounded-full bg-primary/10 p-1.5" />
+                        <div className="p-3 rounded-2xl bg-secondary flex items-center gap-1.5 shadow-md rounded-bl-none">
+                           <Skeleton className="h-2 w-16" />
+                        </div>
+                    </motion.div>
+                )}
              </div>
            </ScrollArea>
            <div className="p-4 border-t bg-background/80">
@@ -200,16 +204,16 @@ export function ChatAssistant() {
                     render={({ field }) => (
                         <FormItem className="flex-1">
                             <FormControl>
-                                <Input placeholder="Ask KisanBot anything..." {...field} autoComplete="off" />
+                                <Input placeholder="Ask KisanBot anything..." {...field} autoComplete="off" className="rounded-full px-5"/>
                             </FormControl>
                             <FormMessage />
                         </FormItem>
                     )}
                     />
-                    <Button type="button" variant="outline" size="icon" onClick={toggleListening} disabled={loading} className='shrink-0'>
+                    <Button type="button" variant="outline" size="icon" onClick={toggleListening} disabled={loading} className='shrink-0 rounded-full'>
                         <Mic className={`h-5 w-5 ${isListening ? 'text-destructive animate-pulse' : ''}`} />
                     </Button>
-                    <Button type="submit" size="icon" disabled={loading} className='shrink-0'>
+                    <Button type="submit" size="icon" disabled={loading} className='shrink-0 rounded-full'>
                         <Send className="h-5 w-5" />
                     </Button>
                 </form>

@@ -16,7 +16,9 @@ export const useSpeechRecognition = ({ onTranscript, onError, lang = 'en-US' }: 
     
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
-      onError?.('Speech recognition is not supported in this browser.');
+      if(isListening) { // Only call onError if user tried to activate it
+          onError?.('Speech recognition is not supported in this browser.');
+      }
       return;
     }
 
@@ -50,7 +52,9 @@ export const useSpeechRecognition = ({ onTranscript, onError, lang = 'en-US' }: 
     recognitionRef.current = recognition;
 
     return () => {
-      recognition.stop();
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lang]);
@@ -63,6 +67,7 @@ export const useSpeechRecognition = ({ onTranscript, onError, lang = 'en-US' }: 
         setTranscript('');
       } catch (error) {
         console.error("Could not start speech recognition:", error);
+        onError?.("Could not start recognition. Is microphone enabled?");
       }
     }
   };

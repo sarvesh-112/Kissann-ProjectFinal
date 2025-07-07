@@ -11,8 +11,10 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { useToast } from '@/hooks/use-toast';
 import { getGovernmentSchemeInformation, GovernmentSchemeInformationOutput } from '@/ai/flows/government-scheme-information';
 import { textToSpeech } from '@/ai/flows/tts';
-import { Loader2, Landmark, FileText, Link, Mic, Volume2 } from 'lucide-react';
+import { Landmark, FileText, Link, Mic, Volume2 } from 'lucide-react';
 import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
+import { motion } from 'framer-motion';
+import { Skeleton } from '../ui/skeleton';
 
 const formSchema = z.object({
   query: z.string().min(10, { message: 'Please describe what you are looking for in at least 10 characters.' }),
@@ -37,6 +39,10 @@ export function GovernmentSchemes() {
       form.setValue('query', text);
       stopListening();
     },
+    onError: (error) => {
+        console.error("Speech recognition error:", error);
+        // Do not show a toast for this error
+    }
   });
 
   useEffect(() => {
@@ -89,19 +95,19 @@ export function GovernmentSchemes() {
   };
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 space-y-6">
+    <div className="p-4 sm:p-6 lg:p-8 space-y-8">
       <header>
         <h1 className="font-headline text-4xl font-bold tracking-tight">Government Scheme Information</h1>
-        <p className="text-muted-foreground mt-2 font-body">Ask a question about government programs for farmers to get relevant information.</p>
+        <p className="text-muted-foreground mt-2">Ask a question about government programs for farmers to get relevant information.</p>
       </header>
       
       <div className="grid gap-8 md:grid-cols-2">
-        <Card className="shadow-md hover:shadow-lg transition-shadow">
+        <Card className="shadow-lg hover:shadow-2xl transition-shadow duration-300 rounded-2xl">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <CardHeader>
                 <CardTitle className="font-headline text-2xl">Ask About a Scheme</CardTitle>
-                <CardDescription className="font-body">Describe what you need help with, e.g., "I need a loan for buying seeds" or "tell me about crop insurance".</CardDescription>
+                <CardDescription>Describe what you need help with, e.g., "I need a loan for buying seeds" or "tell me about crop insurance".</CardDescription>
               </CardHeader>
               <CardContent>
                 <FormField
@@ -109,10 +115,10 @@ export function GovernmentSchemes() {
                   name="query"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="font-body">Your Question</FormLabel>
+                      <FormLabel>Your Question</FormLabel>
                       <FormControl>
                         <div className="relative">
-                          <Textarea rows={5} placeholder="Type your question here..." {...field} />
+                          <Textarea rows={5} placeholder="Type your question here..." {...field} className="rounded-lg"/>
                            <Button variant="ghost" size="icon" className="absolute right-2 bottom-2 h-8 w-8" type="button" onClick={toggleListening}>
                             <Mic className={`h-4 w-4 ${isListening ? 'text-destructive animate-pulse' : ''}`} />
                           </Button>
@@ -124,15 +130,8 @@ export function GovernmentSchemes() {
                 />
               </CardContent>
               <CardFooter>
-                 <Button type="submit" disabled={loading} className="font-semibold">
-                  {loading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Searching...
-                    </>
-                  ) : (
-                    'Get Information'
-                  )}
+                 <Button type="submit" disabled={loading} size="lg" className="font-bold w-full">
+                  {loading ? 'Searching...' : 'Get Information'}
                 </Button>
               </CardFooter>
             </form>
@@ -141,50 +140,66 @@ export function GovernmentSchemes() {
 
         <div className="space-y-6">
           {loading && (
-             <Card className="flex flex-col items-center justify-center h-full shadow-md">
-              <CardContent className="text-center p-6">
-                <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
-                <p className="font-semibold font-headline">Finding Schemes...</p>
-                <p className="text-sm text-muted-foreground font-body">Our AI is searching for relevant information.</p>
-              </CardContent>
+             <Card className="flex flex-col h-full shadow-lg rounded-2xl animate-pulse p-6">
+              <div className="flex items-start gap-4 mb-6">
+                <Skeleton className="h-10 w-10 rounded-lg" />
+                <div className="space-y-2 flex-1">
+                  <Skeleton className="h-6 w-3/4" />
+                  <Skeleton className="h-4 w-1/2" />
+                </div>
+              </div>
+              <div className="space-y-4">
+                <Skeleton className="h-5 w-1/3" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-5/6" />
+                <Skeleton className="h-5 w-1/4 mt-4" />
+                <Skeleton className="h-4 w-full" />
+              </div>
             </Card>
           )}
 
           {result && (
-             <Card className="bg-gradient-to-br from-card to-secondary/50 shadow-lg">
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+            >
+             <Card className="bg-gradient-to-br from-card to-secondary/30 shadow-xl rounded-2xl">
                <CardHeader className="flex flex-row items-start gap-4">
-                 <Landmark className="h-8 w-8 text-primary shrink-0" />
+                 <div className="bg-primary/10 p-3 rounded-xl">
+                    <Landmark className="h-6 w-6 text-primary shrink-0" />
+                 </div>
                 <div>
                     <CardTitle className="font-headline text-2xl">{result.scheme}</CardTitle>
-                    <CardDescription className="font-body">Information based on your query.</CardDescription>
+                    <CardDescription>Information based on your query.</CardDescription>
                 </div>
                 <Button variant="ghost" size="icon" className="ml-auto" onClick={() => handleSpeak(result.scheme + '. ' + result.summary + ' Eligibility: ' + result.eligibility)} disabled={isSpeaking}>
-                    {isSpeaking ? <Loader2 className="h-5 w-5 animate-spin" /> : <Volume2 className="h-5 w-5" />}
+                    <Volume2 className="h-5 w-5" />
                 </Button>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-6">
                 <div>
                   <h3 className="font-headline text-lg font-semibold flex items-center gap-2">
                     <FileText className="h-5 w-5 text-primary" />
                     Summary
                   </h3>
-                  <p className="text-muted-foreground pl-7 font-body">{result.summary}</p>
+                  <p className="text-muted-foreground mt-1">{result.summary}</p>
                 </div>
                 <div>
                    <h3 className="font-headline text-lg font-semibold">Eligibility</h3>
-                  <p className="text-muted-foreground font-body">{result.eligibility}</p>
+                  <p className="text-muted-foreground mt-1">{result.eligibility}</p>
                 </div>
                  <div>
-                   <h3 className="font-headline text-lg font-semibold">Application Link</h3>
-                    <Button asChild variant="link" className="p-0 h-auto">
-                        <a href={result.link} target="_blank" rel="noopener noreferrer" className="text-base text-primary hover:underline font-body">
+                    <Button asChild className="w-full font-bold" size="lg">
+                        <a href={result.link} target="_blank" rel="noopener noreferrer">
                             <Link className="mr-2 h-4 w-4" />
-                            Visit Official Scheme Page
+                            Visit Official Page
                         </a>
                     </Button>
                 </div>
               </CardContent>
             </Card>
+            </motion.div>
           )}
           {audioUrl && (
             <audio autoPlay src={audioUrl} onEnded={() => setAudioUrl(null)} className="hidden" />

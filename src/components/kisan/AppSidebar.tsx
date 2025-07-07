@@ -9,9 +9,11 @@ import {
   SidebarMenuButton,
   SidebarFooter,
   SidebarTrigger,
+  SidebarSeparator,
 } from '@/components/ui/sidebar';
 import { Logo } from '@/components/kisan/Logo';
 import { Home, Leaf, BarChart3, Landmark, MessageSquare } from 'lucide-react';
+import { Button } from '../ui/button';
 
 type NavLink = {
   label: string;
@@ -59,8 +61,9 @@ export function AppSidebar({ activeView, setActiveView }: AppSidebarProps) {
           ))}
         </SidebarMenu>
       </SidebarContent>
-      <SidebarFooter>
-        <p className="text-xs text-sidebar-foreground/70 group-data-[collapsible=icon]:hidden">
+      <SidebarFooter className='mt-auto'>
+        <SidebarSeparator />
+         <p className="text-xs text-sidebar-foreground/70 group-data-[collapsible=icon]:hidden p-2">
             Powered by Google AI
         </p>
       </SidebarFooter>
