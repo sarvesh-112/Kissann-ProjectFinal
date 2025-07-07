@@ -3,18 +3,18 @@
  * @fileOverview A Text-to-Speech (TTS) service.
  *
  * - textToSpeech - A function that converts text to speech.
- * - TextToSpeechInputSchema - The input type for the textToSpeech function.
- * - TextToSpeechOutputSchema - The return type for the textToSpeech function.
+ * - TextToSpeechInput - The input type for the textToSpeech function.
+ * - TextToSpeechOutput - The return type for the textToSpeech function.
  */
 import {ai} from '@/ai/genkit';
 import {googleAI} from '@genkit-ai/googleai';
 import {z} from 'genkit';
 import wav from 'wav';
 
-export const TextToSpeechInputSchema = z.string();
+const TextToSpeechInputSchema = z.string();
 export type TextToSpeechInput = z.infer<typeof TextToSpeechInputSchema>;
 
-export const TextToSpeechOutputSchema = z.object({
+const TextToSpeechOutputSchema = z.object({
   media: z.string().describe('The base64 encoded WAV audio data URI.'),
 });
 export type TextToSpeechOutput = z.infer<typeof TextToSpeechOutputSchema>;
