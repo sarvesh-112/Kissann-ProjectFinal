@@ -68,7 +68,7 @@ Instructions:
 1.  Analyze the user's query carefully to understand their core need.
 2.  Examine the candidate schemes and select the single best match for the user's query.
 3.  If you find a perfectly relevant scheme, return its details ("scheme", "summary", "eligibility", "link") in the required JSON format.
-4.  If none of the candidates are a good match, return an object with the scheme name "Not Found" and a helpful summary explaining that you could not find a match for the query '{{query}}'.
+4.  If none of the candidates are a good match, you MUST return an object with \`scheme: "Not Found"\`, \`summary: "A helpful message explaining no match was found for the query '{{query}}'"\`, \`eligibility: "N/A"\`, and \`link: "https://www.india.gov.in/"\`.
 `,
 });
 

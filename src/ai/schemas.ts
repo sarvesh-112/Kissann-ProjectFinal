@@ -68,7 +68,7 @@ export const GovernmentSchemeInformationOutputSchema = z.object({
   scheme: z.string().describe('The name of the relevant government scheme.'),
   summary: z.string().describe('A plain-language explanation of what the scheme offers.'),
   eligibility: z.string().describe('The eligibility criteria for the scheme.'),
-  link: z.string().url().describe('A link to apply for or read more about the scheme.'),
+  link: z.string().describe('A link to apply for or read more about the scheme.'),
 });
 export type GovernmentSchemeInformationOutput = z.infer<
   typeof GovernmentSchemeInformationOutputSchema
