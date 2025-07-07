@@ -140,7 +140,6 @@ export async function askKisanBot(
       language,
     });
 
-    // Updated fallback message as requested
     const fallbackMessage = "I'm unable to fetch a response right now. Try again shortly or ask something simpler.";
 
     logAgentFailure(query, error, language);
