@@ -10,7 +10,8 @@ import {ai} from '@/ai/genkit';
 import { 
     DiagnoseCropDiseaseBySymptomsInputSchema,
     DiagnoseCropDiseaseOutputSchema,
-    type DiagnoseCropDiseaseBySymptomsInput
+    type DiagnoseCropDiseaseBySymptomsInput,
+    type DiagnoseCropDiseaseOutput
 } from '@/ai/schemas';
 
 const prompt = ai.definePrompt({
@@ -40,6 +41,16 @@ const diagnoseCropDiseaseBySymptomsFlow = ai.defineFlow(
   }
 );
 
-export async function getDiagnosisFromSymptoms(input: DiagnoseCropDiseaseBySymptomsInput) {
-  return diagnoseCropDiseaseBySymptomsFlow(input);
+export async function getDiagnosisFromSymptoms(input: DiagnoseCropDiseaseBySymptomsInput): Promise<DiagnoseCropDiseaseOutput> {
+  try {
+    return await diagnoseCropDiseaseBySymptomsFlow(input);
+  } catch (error) {
+    console.error("Error in getDiagnosisFromSymptoms flow, returning fallback:", error);
+    // Return a structured fallback response instead of throwing an error.
+    // This makes the tool more resilient and prevents the entire agent from failing.
+    return {
+      disease: "Diagnosis Unavailable",
+      remedy: "I was unable to determine the disease from the symptoms provided. Please try describing them differently, or use the 'Crop Diagnosis' feature to upload a photo for a more accurate analysis."
+    };
+  }
 }

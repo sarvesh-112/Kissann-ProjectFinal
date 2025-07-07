@@ -112,11 +112,16 @@ export async function askKisanBot(query: string, language: SupportedLanguage = '
         const result = await kisanBotFlow({ query, language });
         return result;
     } catch (error) {
-        console.error("Error in askKisanBot flow:", error);
+        // Log detailed error for debugging. This catch block is a final safety net.
+        // If this is triggered, it means an error occurred that wasn't caught by a tool's specific fallback.
+        console.error("Critical Error in askKisanBot flow. This should not happen if tools have proper fallbacks.", error);
+        
         const errorMessage = error instanceof Error ? error.message : String(error);
         const fallbackMessage = "Sorry, I am having trouble connecting right now. Please try again in a moment.";
-        // Also log this interaction with the error message
+
+        // Log the failure to Firestore for monitoring
         logAgentInteraction(query, `Error: ${errorMessage}`, language);
+        
         return fallbackMessage;
     }
 }
