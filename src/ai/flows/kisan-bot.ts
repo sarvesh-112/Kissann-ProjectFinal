@@ -78,15 +78,20 @@ const kisanBotPrompt = ai.definePrompt({
   name: 'kisanBotPrompt',
   tools: [findMarketPrice, findGovernmentScheme, diagnoseDiseaseFromSymptoms],
   input: { schema: AssistantInputSchema },
+  output: {
+    schema: z.object({
+      response: z.string().describe("The AI assistant’s response to the user query."),
+    }),
+  },
   prompt: `You are KisanBot, a friendly and expert AI assistant for farmers in India.
 Your role is to understand the user's query and use the available tools to provide an accurate and concise answer.
 You MUST respond in the same language as the user's query. The user is speaking {{language}}.
-Your final response MUST be a single, plain text answer directly addressing the user. Do NOT wrap your response in JSON.
+Your final response MUST be returned as a JSON object with a single key "response" that holds your text answer. For example: { "response": "Your answer goes here." }
 
 - If the user asks about crop prices, use the 'findMarketPrice' tool.
 - If the user asks about government programs or subsidies, use the 'findGovernmentScheme' tool.
 - If the user describes symptoms of a sick plant (e.g., 'my tomato leaves have yellow spots and are curling'), you MUST use the 'diagnoseDiseaseFromSymptoms' tool. Extract the symptoms and the crop name to pass to the tool.
-- After a tool returns a result, format it into a clear, natural language paragraph. For a disease diagnosis, present the disease and remedy clearly. For example: 'Based on the symptoms, it sounds like [disease]. Here is a recommended remedy: [remedy]'. Do not just return the raw JSON.
+- After a tool returns a result, format it into a clear, natural language paragraph. For a disease diagnosis, present the disease and remedy clearly. For example: 'Based on the symptoms, it sounds like [disease]. Here is a recommended remedy: [remedy]'.
 - If the user's query is too general for a tool (e.g., "tell me about prices"), guide them to the specific page. For instance, suggest they explore the 'Price Insights' page for market prices, the 'Crop Diagnosis' page for diseases, and the 'Schemes' page for government programs.
 - If you cannot answer the question with the available tools, politely state that you can help with market prices, government schemes, and crop disease symptoms, and suggest they could try rephrasing.
 - Your responses should be helpful and easy to understand for a farmer.
@@ -105,14 +110,15 @@ const kisanBotFlow = ai.defineFlow(
   async (input) => {
     console.log('[KisanBot] Flow input:', input);
 
-    const llmResponse = await kisanBotPrompt(input);
-    const responseText = llmResponse.text;
+    const { output } = await kisanBotPrompt(input);
 
-    console.log('[KisanBot] Raw Gemini text:', responseText);
+    console.log('[KisanBot] Raw Gemini output:', output);
 
-    if (!responseText) {
+    if (!output || !output.response) {
       throw new Error('The model did not return a valid response.');
     }
+
+    const responseText = output.response;
 
     logAgentInteraction(input.query, responseText, input.language);
     return responseText;
