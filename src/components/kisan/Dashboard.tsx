@@ -2,7 +2,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowRight, Leaf, BarChart3, Landmark } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
-import Image from 'next/image';
 
 type DashboardProps = {
   setActiveView: (view: 'dashboard' | 'disease' | 'market' | 'schemes' | 'chat') => void;
@@ -54,14 +53,12 @@ export function Dashboard({ setActiveView }: DashboardProps) {
             transition={{ duration: 0.7, delay: 0.2 }}
             className="flex justify-center"
           >
-            <Image 
-              src="https://images.unsplash.com/photo-1581093588401-7491f1c00521?auto=format&fit=crop&w=400&q=80" 
-              alt="An illustration of a friendly Indian farmer" 
-              width={400} 
-              height={400} 
-              data-ai-hint="indian farmer illustration"
-              className="rounded-full shadow-2xl"
-            />
+            <div 
+              data-ai-hint="farming leaf logo"
+              className="rounded-full shadow-2xl bg-primary/10 w-96 h-96 flex items-center justify-center"
+            >
+              <Leaf className="w-48 h-48 text-primary/80" />
+            </div>
           </motion.div>
         </div>
       </section>
