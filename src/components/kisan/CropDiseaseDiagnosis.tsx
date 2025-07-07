@@ -74,19 +74,9 @@ export function CropDiseaseDiagnosis() {
     reader.readAsDataURL(data.image);
     reader.onload = async () => {
       const photoDataUri = reader.result as string;
-      try {
-        const diagnosisResult = await diagnoseCropDisease({ photoDataUri });
-        setResult(diagnosisResult);
-      } catch (error) {
-        console.error('Error diagnosing crop disease:', error);
-        toast({
-          variant: 'destructive',
-          title: 'Error',
-          description: 'Failed to get diagnosis. Please try again.',
-        });
-      } finally {
-        setLoading(false);
-      }
+      const diagnosisResult = await diagnoseCropDisease({ photoDataUri });
+      setResult(diagnosisResult);
+      setLoading(false);
     };
     reader.onerror = (error) => {
       console.error('Error reading file:', error);
@@ -122,6 +112,8 @@ export function CropDiseaseDiagnosis() {
       startListening();
     }
   };
+
+  const isError = result?.disease === 'Diagnosis Failed';
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 space-y-8">
@@ -216,29 +208,37 @@ export function CropDiseaseDiagnosis() {
             >
                 <Card className="bg-gradient-to-br from-card to-secondary/30 shadow-xl rounded-2xl">
                 <CardHeader className="flex flex-row items-start gap-4">
-                    <Sparkles className="h-8 w-8 text-yellow-500 shrink-0" />
+                    {isError ? (
+                        <AlertTriangle className="h-8 w-8 text-destructive shrink-0" />
+                    ) : (
+                        <Sparkles className="h-8 w-8 text-yellow-500 shrink-0" />
+                    )}
                     <div>
-                    <CardTitle className="font-headline text-2xl">Diagnosis Result</CardTitle>
-                    <CardDescription>Here's what our AI found.</CardDescription>
+                    <CardTitle className="font-headline text-2xl">{isError ? 'Diagnosis Failed' : 'Diagnosis Result'}</CardTitle>
+                    <CardDescription>{isError ? "An error occurred." : "Here's what our AI found."}</CardDescription>
                     </div>
-                    <Button variant="ghost" size="icon" className="ml-auto" onClick={() => handleSpeak(result.disease + '. ' + result.remedy)} disabled={isSpeaking}>
-                        <Volume2 className="h-5 w-5" />
-                    </Button>
+                    {!isError && (
+                        <Button variant="ghost" size="icon" className="ml-auto" onClick={() => handleSpeak(result.disease + '. ' + result.remedy)} disabled={isSpeaking}>
+                            <Volume2 className="h-5 w-5" />
+                        </Button>
+                    )}
                 </CardHeader>
                 <CardContent className="space-y-4">
+                    {!isError && (
+                        <div>
+                            <h3 className="font-headline text-lg font-semibold flex items-center gap-2">
+                                <AlertTriangle className="h-5 w-5 text-destructive" />
+                                Detected Issue
+                            </h3>
+                            <p className="text-lg text-foreground pl-7">{result.disease}</p>
+                        </div>
+                    )}
                     <div>
-                    <h3 className="font-headline text-lg font-semibold flex items-center gap-2">
-                        <AlertTriangle className="h-5 w-5 text-destructive" />
-                        Detected Issue
-                    </h3>
-                    <p className="text-lg text-foreground pl-7">{result.disease}</p>
-                    </div>
-                    <div>
-                    <h3 className="font-headline text-lg font-semibold flex items-center gap-2">
-                      <Leaf className="h-5 w-5 text-primary" />
-                      Recommended Remedy
-                    </h3>
-                    <p className="text-muted-foreground whitespace-pre-wrap pl-7">{result.remedy}</p>
+                        <h3 className="font-headline text-lg font-semibold flex items-center gap-2">
+                            <Leaf className="h-5 w-5 text-primary" />
+                            {isError ? 'Details' : 'Recommended Remedy'}
+                        </h3>
+                        <p className="text-muted-foreground whitespace-pre-wrap pl-7">{result.remedy}</p>
                     </div>
                 </CardContent>
                 </Card>

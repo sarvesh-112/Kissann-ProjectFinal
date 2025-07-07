@@ -23,11 +23,17 @@ export async function diagnoseCropDisease(input: DiagnoseCropDiseaseInput): Prom
     try {
         const result = await diagnoseCropDiseaseFlow(input);
         // Do not await logging to avoid delaying the response to the user
-        logDiseaseDiagnosis(input.photoDataUri, result);
+        if (result.disease !== 'Diagnosis Failed') {
+            logDiseaseDiagnosis(input.photoDataUri, result);
+        }
         return result;
     } catch (error) {
         console.error("Error in diagnoseCropDisease flow:", error);
-        throw new Error("Failed to diagnose crop disease.");
+        // Return a structured fallback response to be handled by the UI
+        return {
+            disease: "Diagnosis Failed",
+            remedy: "Sorry, I was unable to analyze the image. This could be due to a temporary issue or if the image is unclear. Please try again with a different photo."
+        };
     }
 }
 

@@ -65,7 +65,7 @@ const findGovernmentScheme = ai.defineTool(
 const diagnoseDiseaseFromSymptoms = ai.defineTool(
   {
     name: 'diagnoseDiseaseFromSymptoms',
-    description: 'Diagnose a crop disease based on a text description of its symptoms.',
+    description: "Use this tool *only* when the user describes the physical appearance of a sick plant (e.g., spots on leaves, wilting, discoloration) to find out the disease and its remedy. Do not use it for general crop advice.",
     inputSchema: DiagnoseCropDiseaseBySymptomsInputSchema,
     outputSchema: DiagnoseCropDiseaseOutputSchema,
   },
@@ -90,8 +90,8 @@ You MUST respond in the same language as the user's query. The user is speaking 
 
 - If the user asks about crop prices, use the 'findMarketPrice' tool.
 - If the user asks about government programs or subsidies, use the 'findGovernmentScheme' tool.
-- If the user describes symptoms of a sick plant (e.g., 'leaves have yellow spots'), use the 'diagnoseDiseaseFromSymptoms' tool.
-- After a tool returns a result, format it into a clear, natural language paragraph. Do not just return the raw JSON.
+- If the user describes symptoms of a sick plant (e.g., 'my tomato leaves have yellow spots and are curling'), you MUST use the 'diagnoseDiseaseFromSymptoms' tool. Extract the symptoms and the crop name to pass to the tool.
+- After a tool returns a result, format it into a clear, natural language paragraph. For a disease diagnosis, present the disease and remedy clearly. For example: 'Based on the symptoms, it sounds like [disease]. Here is a recommended remedy: [remedy]'. Do not just return the raw JSON.
 - If the user's query is too general for a tool (e.g., "tell me about prices"), guide them to the specific page. For instance, suggest they explore the 'Price Insights' page for market prices, the 'Crop Diagnosis' page for diseases, and the 'Schemes' page for government programs.
 - If you cannot answer the question with the available tools, politely state that you can help with market prices, government schemes, and crop disease symptoms, and suggest they could try rephrasing.
 - Your responses should be helpful and easy to understand for a farmer.
