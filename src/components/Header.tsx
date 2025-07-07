@@ -1,18 +1,98 @@
-import Image from 'next/image';
+"use client";
 
-// You'll need to replace these with the actual paths to your logo files
-import googleLogo from '@/assets/google-logo.png'; // Example path
-import agenticAILogo from '@/assets/agentic-ai-logo.png'; // Example path
+import { useState } from 'react';
+import { Logo } from '@/components/kisan/Logo';
+import { Button } from '@/components/ui/button';
+import { Menu, X } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
-export function Header() {
+type NavLink = {
+  label: string;
+  view: 'dashboard' | 'disease' | 'market' | 'schemes';
+};
+
+const navLinks: NavLink[] = [
+  { label: 'Home', view: 'dashboard' },
+  { label: 'Crop Diagnosis', view: 'disease' },
+  { label: 'Price Insights', view: 'market' },
+  { label: 'Schemes', view: 'schemes' },
+];
+
+type HeaderProps = {
+  activeView: string;
+  setActiveView: (view: 'dashboard' | 'disease' | 'market' | 'schemes') => void;
+};
+
+export function Header({ activeView, setActiveView }: HeaderProps) {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   return (
-    <header className="flex items-center justify-between p-4 bg-white shadow-md">
-      <div className="flex items-center gap-4">
-        <Image src={googleLogo} alt="Google Logo" width={80} height={30} />
-        <Image src={agenticAILogo} alt="Agentic AI Logo" width={40} height={40} />
-        <h1 className="font-bold text-xl">Procedural Prospectors</h1>
+    <header className="sticky top-0 z-50 w-full animate-in fade-in-down duration-300 shadow-lg">
+      <div className="relative bg-gradient-to-r from-lime-300 via-green-500 to-green-700 text-white p-4 transition-all duration-300">
+        <div className="container mx-auto flex items-center justify-between">
+          <div className="animate-in fade-in slide-in-from-left duration-700">
+            <Logo />
+          </div>
+
+          {/* Desktop Nav */}
+          <nav className="hidden md:flex items-center gap-2">
+            {navLinks.map((link) => (
+              <Button
+                key={link.view}
+                variant="ghost"
+                onClick={() => setActiveView(link.view)}
+                className={cn(
+                  'font-semibold text-white hover:bg-white/20 hover:scale-105 transition-all',
+                  activeView === link.view && 'bg-white/25'
+                )}
+              >
+                {link.label}
+              </Button>
+            ))}
+          </nav>
+
+          <div className="hidden md:flex items-center">
+             <p className="text-sm font-semibold">Powered by Google AI</p>
+          </div>
+
+          {/* Mobile Menu Button */}
+          <div className="md:hidden">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="text-white hover:bg-white/20"
+            >
+              {isMenuOpen ? <X /> : <Menu />}
+            </Button>
+          </div>
+        </div>
       </div>
-      {/* You can add other header elements here like navigation */}
+
+      {/* Mobile Menu */}
+      {isMenuOpen && (
+        <div className="md:hidden bg-green-700/95 backdrop-blur-sm text-white animate-in fade-in slide-in-from-top-4 duration-300">
+          <nav className="flex flex-col items-center gap-4 p-4">
+            {navLinks.map((link) => (
+              <Button
+                key={link.view}
+                variant="ghost"
+                onClick={() => {
+                  setActiveView(link.view);
+                  setIsMenuOpen(false);
+                }}
+                className={cn(
+                  'w-full font-semibold text-white hover:bg-white/20 text-lg',
+                  activeView === link.view && 'bg-white/25'
+                )}
+              >
+                {link.label}
+              </Button>
+            ))}
+             <p className="text-sm font-semibold pt-4 border-t border-white/20 w-full text-center">Powered by Google AI</p>
+          </nav>
+        </div>
+      )}
     </header>
   );
 }

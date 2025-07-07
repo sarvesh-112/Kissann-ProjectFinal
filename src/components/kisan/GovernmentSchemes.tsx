@@ -72,16 +72,16 @@ export function GovernmentSchemes() {
   return (
     <div className="p-4 sm:p-6 lg:p-8 space-y-6">
       <header>
-        <h1 className="font-headline text-3xl font-bold tracking-tight">Government Scheme Information</h1>
+        <h1 className="font-headline text-4xl font-bold tracking-tight">Government Scheme Information</h1>
         <p className="text-muted-foreground mt-2">Ask a question about government programs for farmers to get relevant information.</p>
       </header>
       
       <div className="grid gap-8 md:grid-cols-2">
-        <Card>
+        <Card className="shadow-md hover:shadow-lg transition-shadow">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <CardHeader>
-                <CardTitle className="font-headline">Ask About a Scheme</CardTitle>
+                <CardTitle className="font-headline text-2xl">Ask About a Scheme</CardTitle>
                 <CardDescription>Describe what you need help with, e.g., "I need a loan for buying seeds" or "tell me about crop insurance".</CardDescription>
               </CardHeader>
               <CardContent>
@@ -105,7 +105,7 @@ export function GovernmentSchemes() {
                 />
               </CardContent>
               <CardFooter>
-                 <Button type="submit" disabled={loading}>
+                 <Button type="submit" disabled={loading} className="font-semibold">
                   {loading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -122,7 +122,7 @@ export function GovernmentSchemes() {
 
         <div className="space-y-6">
           {loading && (
-             <Card className="flex flex-col items-center justify-center h-full">
+             <Card className="flex flex-col items-center justify-center h-full shadow-md">
               <CardContent className="text-center p-6">
                 <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
                 <p className="font-semibold font-headline">Finding Schemes...</p>
@@ -132,7 +132,7 @@ export function GovernmentSchemes() {
           )}
 
           {result && (
-             <Card className="bg-gradient-to-br from-card to-secondary/50">
+             <Card className="bg-gradient-to-br from-card to-secondary/50 shadow-lg">
                <CardHeader className="flex flex-row items-start gap-4">
                  <Landmark className="h-8 w-8 text-primary shrink-0" />
                 <div>

@@ -98,16 +98,16 @@ export function CropDiseaseDiagnosis() {
   return (
     <div className="p-4 sm:p-6 lg:p-8 space-y-6">
       <header>
-        <h1 className="font-headline text-3xl font-bold tracking-tight">Crop Disease Diagnosis</h1>
+        <h1 className="font-headline text-4xl font-bold tracking-tight">Crop Disease Diagnosis</h1>
         <p className="text-muted-foreground mt-2">Upload an image of an affected crop to get an AI-powered diagnosis and remedy.</p>
       </header>
 
       <div className="grid gap-8 md:grid-cols-2">
-        <Card>
+        <Card className="shadow-md hover:shadow-lg transition-shadow">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <CardHeader>
-                <CardTitle className="font-headline">Upload Crop Image</CardTitle>
+                <CardTitle className="font-headline text-2xl">Upload Crop Image</CardTitle>
                 <CardDescription>Select a clear image of the crop showing signs of disease.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -137,7 +137,7 @@ export function CropDiseaseDiagnosis() {
                 </div>
               </CardContent>
               <CardFooter>
-                <Button type="submit" disabled={loading}>
+                <Button type="submit" disabled={loading} className="font-semibold">
                   {loading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -154,7 +154,7 @@ export function CropDiseaseDiagnosis() {
 
         <div className="space-y-6">
           {loading && (
-             <Card className="flex flex-col items-center justify-center h-full">
+             <Card className="flex flex-col items-center justify-center h-full shadow-md">
               <CardContent className="text-center p-6">
                 <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
                 <p className="font-semibold font-headline">Analyzing Image...</p>
@@ -164,7 +164,7 @@ export function CropDiseaseDiagnosis() {
           )}
 
           {result && (
-            <Card className="bg-gradient-to-br from-card to-secondary/50">
+            <Card className="bg-gradient-to-br from-card to-secondary/50 shadow-lg">
               <CardHeader className="flex flex-row items-start gap-4">
                 <Sparkles className="h-8 w-8 text-accent-foreground stroke-accent shrink-0" />
                 <div>
