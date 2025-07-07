@@ -78,14 +78,10 @@ const kisanBotPrompt = ai.definePrompt({
   name: 'kisanBotPrompt',
   tools: [findMarketPrice, findGovernmentScheme, diagnoseDiseaseFromSymptoms],
   input: { schema: AssistantInputSchema },
-  output: {
-    schema: z.object({
-      response: z.string().describe("The AI assistant’s response to the user query."),
-    }),
-  },
   prompt: `You are KisanBot, a friendly and expert AI assistant for farmers in India.
 Your role is to understand the user's query and use the available tools to provide an accurate and concise answer.
 You MUST respond in the same language as the user's query. The user is speaking {{language}}.
+Your final response MUST be a single, plain text answer directly addressing the user. Do NOT wrap your response in JSON.
 
 - If the user asks about crop prices, use the 'findMarketPrice' tool.
 - If the user asks about government programs or subsidies, use the 'findGovernmentScheme' tool.
@@ -109,15 +105,14 @@ const kisanBotFlow = ai.defineFlow(
   async (input) => {
     console.log('[KisanBot] Flow input:', input);
 
-    const { output } = await kisanBotPrompt(input);
+    const llmResponse = await kisanBotPrompt(input);
+    const responseText = llmResponse.text;
 
-    console.log('[KisanBot] Raw Gemini output:', output);
+    console.log('[KisanBot] Raw Gemini text:', responseText);
 
-    if (!output || !output.response) {
+    if (!responseText) {
       throw new Error('The model did not return a valid response.');
     }
-
-    const responseText = output.response;
 
     logAgentInteraction(input.query, responseText, input.language);
     return responseText;
