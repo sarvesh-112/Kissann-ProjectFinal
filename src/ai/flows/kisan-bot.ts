@@ -73,7 +73,8 @@ const kisanBotPrompt = ai.definePrompt({
   name: 'kisanBotPrompt',
   tools: [findMarketPrice, findGovernmentScheme, diagnoseDiseaseFromSymptoms],
   input: { schema: AssistantInputSchema },
-  output: { schema: z.string() },
+  // Changed schema to `z.any()` for debugging, as Gemini might return a structured object from tools.
+  output: { schema: z.any() },
   prompt: `You are KisanBot, a friendly and expert AI assistant for farmers in India.
 Your role is to understand the user's query and use the available tools to provide an accurate and concise answer.
 You MUST respond in the same language as the user's query. The user is speaking {{language}}.
@@ -94,16 +95,28 @@ const kisanBotFlow = ai.defineFlow(
   {
     name: 'kisanBotFlow',
     inputSchema: AssistantInputSchema,
+    // The flow must ultimately return a string to the client-side function.
     outputSchema: z.string(),
   },
   async (input) => {
+    console.log("[KisanBot] Flow received input:", input);
+    
     const { output } = await kisanBotPrompt(input);
+    
+    console.log("[KisanBot] Raw output from Gemini:", output);
+
     if (!output) {
       throw new Error("The model did not return a valid response.");
     }
+
+    // The output can be a string or a structured object from a tool call.
+    // We ensure it's always a string before returning.
+    const responseText = typeof output === 'string' ? output : JSON.stringify(output, null, 2);
+
     // Do not await logging
-    logAgentInteraction(input.query, output, input.language);
-    return output;
+    logAgentInteraction(input.query, responseText, input.language);
+
+    return responseText;
   }
 );
 
