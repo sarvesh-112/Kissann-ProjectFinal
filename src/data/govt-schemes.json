@@ -1,0 +1,191 @@
+[
+  {
+    "scheme": "PM-Kisan Samman Nidhi",
+    "summary": "Provides ₹6000 per year in 3 equal installments to all landholding farmers’ families.",
+    "eligibility": "All land-holding farmers' families except tax payers and higher officials.",
+    "link": "https://pmkisan.gov.in/"
+  },
+  {
+    "scheme": "Pradhan Mantri Fasal Bima Yojana (PMFBY)",
+    "summary": "Offers crop insurance for farmers against loss due to natural calamities, pests, and diseases.",
+    "eligibility": "All farmers growing notified crops in notified areas.",
+    "link": "https://pmfby.gov.in/"
+  },
+  {
+    "scheme": "Kisan Credit Card (KCC)",
+    "summary": "Provides timely access to credit for farmers at subsidized interest rates.",
+    "eligibility": "All farmers, including tenant and oral lessee farmers.",
+    "link": "https://vikaspedia.in/agriculture/agri-finance/kisan-credit-card"
+  },
+  {
+    "scheme": "PM Krishi Sinchai Yojana (PMKSY)",
+    "summary": "Promotes irrigation efficiency and water conservation through micro-irrigation.",
+    "eligibility": "All farmers including individual and group beneficiaries.",
+    "link": "https://pmksy.gov.in/"
+  },
+  {
+    "scheme": "Soil Health Card Scheme",
+    "summary": "Provides soil health cards to farmers with information on nutrients and fertilizers needed.",
+    "eligibility": "All farmers practicing cultivation.",
+    "link": "https://soilhealth.dac.gov.in/"
+  },
+  {
+    "scheme": "Rashtriya Krishi Vikas Yojana (RKVY)",
+    "summary": "Offers flexible funding to states for agricultural development projects.",
+    "eligibility": "Implemented by state departments; benefits per project rules.",
+    "link": "https://rkvy.nic.in/"
+  },
+  {
+    "scheme": "National Agriculture Market (e-NAM)",
+    "summary": "Online trading platform for agricultural produce, connecting farmers to buyers.",
+    "eligibility": "All registered farmers and traders via APMCs.",
+    "link": "https://enam.gov.in/"
+  },
+  {
+    "scheme": "Paramparagat Krishi Vikas Yojana (PKVY)",
+    "summary": "Promotes organic farming through cluster-based certification.",
+    "eligibility": "Farmers practicing organic farming under group/cluster model.",
+    "link": "https://vikaspedia.in/agriculture/schemes/paramparagat-krishi-vikas-yojana"
+  },
+  {
+    "scheme": "National Mission on Edible Oils – Oil Palm (NMEO-OP)",
+    "summary": "Boosts oil palm cultivation with financial assistance for farmers.",
+    "eligibility": "Farmers engaged in oil palm cultivation.",
+    "link": "https://nmeo.dac.gov.in/"
+  },
+  {
+    "scheme": "Atma Nirbhar Krishi Yojana",
+    "summary": "Infrastructure development fund to support agri-startups and FPOs.",
+    "eligibility": "FPOs, startups, agri-entrepreneurs, and cooperatives.",
+    "link": "https://www.nabard.org/"
+  },
+  {
+    "scheme": "Sub-Mission on Agricultural Mechanization (SMAM)",
+    "summary": "Provides subsidies on farm machinery for small and marginal farmers.",
+    "eligibility": "Small and marginal farmers across India.",
+    "link": "https://agrimachinery.nic.in/"
+  },
+  {
+    "scheme": "PM Formalisation of Micro Food Processing Enterprises (PM-FME)",
+    "summary": "Supports micro food processors with financial, technical, and business support.",
+    "eligibility": "Individual micro food processors, SHGs, cooperatives, and FPOs.",
+    "link": "https://mofpi.nic.in/pmfme/"
+  },
+  {
+    "scheme": "Livestock Insurance Scheme",
+    "summary": "Provides insurance coverage to farmers for their cattle and livestock.",
+    "eligibility": "All farmers owning cattle or livestock in notified areas.",
+    "link": "https://dahd.nic.in/"
+  },
+  {
+    "scheme": "Weather Based Crop Insurance Scheme (WBCIS)",
+    "summary": "Provides insurance cover based on weather parameters instead of yield.",
+    "eligibility": "Farmers cultivating notified crops in notified areas.",
+    "link": "https://pmfby.gov.in/"
+  },
+  {
+    "scheme": "National Mission on Horticulture",
+    "summary": "Promotes integrated development of horticulture sector for fruits and vegetables.",
+    "eligibility": "All farmers engaged in horticulture production.",
+    "link": "https://midh.gov.in/"
+  },
+  {
+    "scheme": "Agricultural Marketing Infrastructure (AMI)",
+    "summary": "Assists in creating infrastructure like godowns, cold storage, etc.",
+    "eligibility": "FPOs, SHGs, individuals, cooperatives, APMCs.",
+    "link": "https://agricoop.gov.in/"
+  }
+,
+
+  {
+    "scheme": "Krishi Bhagya Scheme (Karnataka)",
+    "summary": "Supports rain-fed farmers by offering micro irrigation and farm ponds to conserve water.",
+    "eligibility": "Dryland farmers in Karnataka with less than 5 hectares of land.",
+    "link": "https://raitamitra.karnataka.gov.in/"
+  },
+  {
+    "scheme": "Raitha Siri (Karnataka)",
+    "summary": "Provides Rs. 10,000 per hectare to millet farmers for promotion of millets.",
+    "eligibility": "Registered millet farmers in Karnataka.",
+    "link": "https://raitamitra.karnataka.gov.in/"
+  },
+  {
+    "scheme": "Raitha Samparka Kendra (Karnataka)",
+    "summary": "Centers that provide information, seeds, fertilizers, and other services to farmers.",
+    "eligibility": "All farmers in Karnataka.",
+    "link": "https://raitamitra.karnataka.gov.in/"
+  },
+  {
+    "scheme": "Yuva Nidhi Scheme (Karnataka)",
+    "summary": "Unemployment allowance to educated youth looking for jobs.",
+    "eligibility": "Graduates/diploma holders unemployed for over 6 months in Karnataka.",
+    "link": "https://sevasindhu.karnataka.gov.in/"
+  },
+  {
+    "scheme": "Ksheera Bhagya Scheme (Karnataka)",
+    "summary": "Provides free milk to school children and boosts dairy farmers' income.",
+    "eligibility": "School children; benefits dairy farmers indirectly.",
+    "link": "https://ksndmc.karnataka.gov.in/"
+  },
+  {
+    "scheme": "Karnataka Grameena Udyog Scheme",
+    "summary": "Encourages rural self-employment via financial support for village industries.",
+    "eligibility": "Rural entrepreneurs and SHGs in Karnataka.",
+    "link": "https://www.kvib.karnataka.gov.in/"
+  },
+  {
+    "scheme": "PM KUSUM Yojana",
+    "summary": "Subsidies for installing solar-powered irrigation pumps for farmers.",
+    "eligibility": "Farmers with grid-connected or off-grid pump sets.",
+    "link": "https://mnre.gov.in/pm-kusum/"
+  },
+  {
+    "scheme": "National Livestock Mission",
+    "summary": "Promotes entrepreneurship and sustainable livestock development.",
+    "eligibility": "Farmers, FPOs, SHGs, and entrepreneurs in livestock rearing.",
+    "link": "https://dahd.nic.in/"
+  },
+  {
+    "scheme": "Farmer Producer Organization (FPO) Scheme",
+    "summary": "Financial and technical support for forming and operating FPOs.",
+    "eligibility": "Minimum 300–500 members required depending on the region.",
+    "link": "https://sfacindia.com/"
+  },
+  {
+    "scheme": "e-Samruddhi Portal (Karnataka)",
+    "summary": "Karnataka’s unified platform for farmer registration, DBT, and subsidy distribution.",
+    "eligibility": "All registered Karnataka farmers.",
+    "link": "https://samruddhi.karnataka.gov.in/"
+  },
+  {
+    "scheme": "Ganga Kalyana Scheme (Karnataka)",
+    "summary": "Irrigation borewells for small and marginal SC/ST farmers.",
+    "eligibility": "SC/ST farmers with no irrigation access and valid land records.",
+    "link": "https://kmdc.karnataka.gov.in/"
+  },
+  {
+    "scheme": "Pradhan Mantri Krishi Sinchayee Yojana - Per Drop More Crop",
+    "summary": "Supports micro irrigation systems to improve water efficiency.",
+    "eligibility": "All small and marginal farmers with water access.",
+    "link": "https://pmksy.gov.in/"
+  },
+  {
+    "scheme": "Farm Machinery Bank (Karnataka)",
+    "summary": "Provides farm equipment on rental basis to small/marginal farmers.",
+    "eligibility": "Small/marginal farmers, FPOs, SHGs in Karnataka.",
+    "link": "https://agrimachinery.nic.in/"
+  },
+  {
+    "scheme": "Zero Budget Natural Farming (ZBNF)",
+    "summary": "Promotes cost-free farming techniques to reduce dependency on external inputs.",
+    "eligibility": "Open to all farmers, especially those facing debt or cost pressure.",
+    "link": "https://nmsa.dac.gov.in/"
+  },
+  {
+    "scheme": "Bhoochetana Plus (Karnataka)",
+    "summary": "Soil health improvement initiative using micronutrients and fertilizers.",
+    "eligibility": "Karnataka farmers with soil test cards.",
+    "link": "https://raitamitra.karnataka.gov.in/"
+  }
+]
+  
