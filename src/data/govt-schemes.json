@@ -13,7 +13,7 @@
   },
   {
     "scheme": "Kisan Credit Card (KCC)",
-    "summary": "Provides timely access to credit for farmers at subsidized interest rates.",
+    "summary": "Provides timely access to credit (loans) for farmers at subsidized interest rates for buying seeds, fertilizers, and other farm inputs.",
     "eligibility": "All farmers, including tenant and oral lessee farmers.",
     "link": "https://vikaspedia.in/agriculture/agri-finance/kisan-credit-card"
   },
@@ -186,6 +186,673 @@
     "summary": "Soil health improvement initiative using micronutrients and fertilizers.",
     "eligibility": "Karnataka farmers with soil test cards.",
     "link": "https://raitamitra.karnataka.gov.in/"
-  }
+  },
+  
+    {
+      "scheme": "MGNREGA (Employment Guarantee)",
+      "summary": "Provides guaranteed 100 days of wage work per year to rural households.",
+      "eligibility": "Any rural adult willing to do unskilled manual labor.",
+      "link": "https://nrega.nic.in/"
+    },
+    {
+      "scheme": "Atal Bhujal Yojana",
+      "summary": "Community-led groundwater management in water-stressed regions.",
+      "eligibility": "Farmers in selected districts.",
+      "link": "https://ataljal.mowr.gov.in/"
+    },
+    {
+      "scheme": "PM-AASHA",
+      "summary": "Ensures MSP for farmers via procurement and price support.",
+      "eligibility": "Farmers growing MSP-notified crops.",
+      "link": "https://agricoop.gov.in/en/pm-aasha"
+    },
+    {
+      "scheme": "National Rural Livelihood Mission (NRLM)",
+      "summary": "Promotes self-employment through SHGs and microcredit.",
+      "eligibility": "Rural women and poor families.",
+      "link": "https://aajeevika.gov.in/"
+    },
+    {
+      "scheme": "National Cooperative Development Corporation (NCDC)",
+      "summary": "Supports cooperatives in agriculture and allied sectors.",
+      "eligibility": "Primary agricultural cooperative societies and federations.",
+      "link": "https://ncdc.nic.in/"
+    },
+    {
+      "scheme": "Mahila Kisan Sashaktikaran Pariyojana (MKSP)",
+      "summary": "Empowers women farmers with skills, inputs, and extension support.",
+      "eligibility": "Women farmers and farm workers.",
+      "link": "https://vikaspedia.in/agriculture/schemes/mahilakisan"
+    },
+    {
+      "scheme": "Pradhan Mantri Matsya Sampada Yojana (PMMSY)",
+      "summary": "Boosts fish production, infrastructure, and processing.",
+      "eligibility": "Fish farmers, fish processing units.",
+      "link": "https://enmefp.gov.in/"
+    },
+    {
+      "scheme": "Livestock Insurance Scheme",
+      "summary": "Offers risk coverage for cattle, buffalo, sheep, goats against diseases/death.",
+      "eligibility": "Livestock owners across notified regions.",
+      "link": "https://dahd.nic.in/"
+    },
+    {
+      "scheme": "Integrated Scheme for Agricultural Marketing (ISAM)",
+      "summary": "Builds market infrastructure like warehouses and cold storage.",
+      "eligibility": "Cooperatives, SHGs, FPOs, APMCs.",
+      "link": "https://agrimarketing.gov.in/"
+    },
+    {
+      "scheme": "Sub-Mission on Seed and Planting Material (SMSP)",
+      "summary": "Promotes quality seed and planting material for crops.",
+      "eligibility": "Seed growers, nurseries, FPOs.",
+      "link": "https://seednet.gov.in/"
+    },
+    {
+      "scheme": "National Bamboo Mission",
+      "summary": "Develops bamboo production and utilization clusters.",
+      "eligibility": "Farmers, cooperatives, entrepreneurs working in bamboo sector.",
+      "link": "https://nbm.nic.in/"
+    },
+    {
+      "scheme": "Per Drop More Crop – PMKSY",
+      "summary": "Promotes micro-irrigation like drip and sprinkler systems.",
+      "eligibility": "Small and marginal farmers with irrigation access.",
+      "link": "https://pmksy.gov.in/"
+    },
+    {
+      "scheme": "Rashtriya Gokul Mission",
+      "summary": "Conserves and develops indigenous bovine breeds.",
+      "eligibility": "Dairy farmers, livestock owners.",
+      "link": "https://dahd.nic.in/"
+    },
+    {
+      "scheme": "NABARD Farmer Producer Organization (FPO) Support",
+      "summary": "Support for promotion and capacity building of FPOs.",
+      "eligibility": "Registered FPOs with minimum membership criteria.",
+      "link": "https://nabard.org/"
+    },
+    {
+      "scheme": "National Crop Insurance Programme (NCIP)",
+      "summary": "Comprehensive insurance for crops via various schemes.",
+      "eligibility": "Farmers cultivating notified crops.",
+      "link": "https://pmfby.gov.in/"
+    },
+    {
+      "scheme": "Interest Subvention Scheme",
+      "summary": "1–2% interest subsidy for short-term crop loans up to a limit.",
+      "eligibility": "Crop loan borrowers from banks.",
+      "link": "https://dbtbharat.gov.in/"
+    },
+    {
+      "scheme": "FPO Cluster Development Programme",
+      "summary": "Builds FPO clusters with processing and marketing infrastructure.",
+      "eligibility": "FPOs registered under central/state schemes.",
+      "link": "https://sfacindia.com/"
+    },
+    {
+      "scheme": "National Mission on Natural Farming (NMNF)",
+      "summary": "Promotes zero-budget natural farming practices.",
+      "eligibility": "All interested farmers; special focus on debt-ridden farmers.",
+      "link": "https://nmsa.dac.gov.in/"
+    },
+    {
+      "scheme": "Gramin Bhandaran Yojana",
+      "summary": "Provides subsidies for rural storage facilities.",
+      "eligibility": "Cooperatives, SHGs, FPOs, private entrepreneurs.",
+      "link": "https://graminbhandaran.gov.in/"
+    },
+    {
+      "scheme": "Dairy Processing and Infrastructure Development Fund (DIDF)",
+      "summary": "Supports dairy infrastructure and processing capacity.",
+      "eligibility": "Milk cooperatives and dairy entrepreneurs.",
+      "link": "https://nbfdd.gov.in/"
+    }
+    ,
+      {
+        "scheme": "Ayushman Bharat-Pradhan Mantri Jan Arogya Yojana (AB-PMJAY)",
+        "summary": "Provides health insurance coverage of ₹5 lakh per family per year.",
+        "eligibility": "Economically vulnerable families identified in SECC.",
+        "link": "https://abdm.gov.in/pmjay"
+      },
+      {
+        "scheme": "National Agriculture Extension Mission (NAEM)",
+        "summary": "Strengthens extension services for agriculture and allied sectors.",
+        "eligibility": "State agencies, KVKs, agricultural universities.",
+        "link": "https://vikaspedia.in/agriculture/schemes"
+      },
+      {
+        "scheme": "Gramin Dak Sevak (Rural Postal Service)",
+        "summary": "Provides postal and banking services in rural areas.",
+        "eligibility": "Rural youth with Class 10 pass.",
+        "link": "https://dops.gov.in/"
+      },
+      {
+        "scheme": "Pradhan Mantri Ujjwala Yojana (PMUY)",
+        "summary": "Provides free LPG connections to BPL families.",
+        "eligibility": "Women from BPL households.",
+        "link": "https://pmuy.gov.in/"
+      },
+      {
+        "scheme": "Deen Dayal Upadhyaya Gram Jyoti Yojana (DDUGJY)",
+        "summary": "Improves rural power infrastructure including feeders and electrification.",
+        "eligibility": "Rural households and villages.",
+        "link": "https://www.ddugjy.gov.in/"
+      },
+      {
+        "scheme": "Pradhan Mantri Street Vendor’s AtmaNirbhar Nidhi (PM SVANidhi)",
+        "summary": "Micro-loan scheme for street vendors to restart businesses post-COVID.",
+        "eligibility": "Street vendors registered under Central or State Udyam Scheme.",
+        "link": "https://pmnsvy-microcerve.impala.gov.in/"
+      },
+      {
+        "scheme": "Digital India Land Records Modernization Programme (DILRMP)",
+        "summary": "Modernizes and digitizes land records in rural areas.",
+        "eligibility": "Land-owning households.",
+        "link": "https://dilrmp.nic.in/"
+      },
+      {
+        "scheme": "National Programme on Dairy Development (NPDD)",
+        "summary": "Supports dairy infrastructure and productivity improvement.",
+        "eligibility": "Dairy cooperatives and dairy farmers.",
+        "link": "https://dahd.nic.in/"
+      },
+      {
+        "scheme": "Pradhan Mantri Awas Yojana – Gramin (PMAY-G)",
+        "summary": "Affordable housing for rural BPL households.",
+        "eligibility": "Rural families without a pucca house.",
+        "link": "https://pmayg.nic.in/"
+      },
+      {
+        "scheme": "Mid Day Meal Scheme",
+        "summary": "Provides free meals to schoolchildren to improve nutrition.",
+        "eligibility": "Children studying in government schools.",
+        "link": "https://mdm.gov.in/"
+      },
+      {
+        "scheme": "PM-DevINE Scheme",
+        "summary": "Centrally-sponsored scheme for sustainable development in North-East India.",
+        "eligibility": "NE states and Union Territories.",
+        "link": "https://www.pmdevine.in/"
+      },
+      {
+        "scheme": "Pragati Scholarship Scheme",
+        "summary": "Scholarship for girls of BPL families pursuing technical education.",
+        "eligibility": "Girl students from economically weaker sections.",
+        "link": "https://www.aishe.gov.in/"
+      },
+      {
+        "scheme": "Pradhan Mantri Fasal Samman Nidhi (Previously PM-Kisan)",
+        "summary": "Direct income support of ₹6,000/year to farmers' families.",
+        "eligibility": "All small and marginal farmers.",
+        "link": "https://pmkisan.gov.in/"
+      },
+      {
+        "scheme": "Telangana Rythu Bandhu Scheme",
+        "summary": "Investment support of ₹10,000/acre per season directly to farmers.",
+        "eligibility": "Land-owning farmers in Telangana.",
+        "link": "https://rythubandhu.telangana.gov.in/"
+      },
+      {
+        "scheme": "Punjab Mukhpind Yojana",
+        "summary": "Seed treatment and procurement initiative for paddy farmers.",
+        "eligibility": "Paddy cultivators in Punjab.",
+        "link": "https://punjab.gov.in/"
+      },
+      {
+        "scheme": "Maharashtra Bhima Yojana",
+        "summary": "Crop insurance and loan waiver for flood-affected farmers.",
+        "eligibility": "Farmers in disaster-affected areas.",
+        "link": "https://mahaagri.gov.in/"
+      },
+      {
+        "scheme": "Kerala Karunya Keralam Scheme",
+        "summary": "Farming support for sustainable agriculture practices.",
+        "eligibility": "Small and marginal farmers in Kerala.",
+        "link": "https://kerala.gov.in/"
+      },
+      {
+        "scheme": "Odisha Krushak Assistance for Livelihood and Income Augmentation (KALIA)",
+        "summary": "Support for cultivation, livelihoods, and insurance.",
+        "eligibility": "Small/marginal farmers, landless agricultural laborers.",
+        "link": "https://kalia.odisha.gov.in/"
+      },
+      {
+        "scheme": "Assam Gramin Bikash Yojana",
+        "summary": "Rural developmental works including irrigation and farm ponds.",
+        "eligibility": "Rural communities in Assam.",
+        "link": "https://directorateofagriculture.assam.gov.in/"
+      },
+      {
+        "scheme": "Rajasthan Farmers’ Income Support Scheme",
+        "summary": "Income subsidy to compensate for low yields.",
+        "eligibility": "Kharif season crop cultivators in Rajasthan.",
+        "link": "https://rajasthan.gov.in/"
+      },
+      
+      {
+          "scheme": "Rajeevika – NRLM (Rajasthan)",
+          "summary": "Empowers rural women through self-help groups and livelihood support.",
+          "eligibility": "Women from rural poor households in Rajasthan.",
+          "link": "https://rajeevika.rajasthan.gov.in/"
+        },
+        {
+          "scheme": "Chief Minister’s FPO Scheme (Uttar Pradesh)",
+          "summary": "Supports formation and development of Farmer Producer Organizations.",
+          "eligibility": "FPOs registered in UP with 300+ farmer members.",
+          "link": "https://upfpo.up.gov.in/"
+        },
+        {
+          "scheme": "Blue Revolution – Integrated Development and Management of Fisheries",
+          "summary": "Boosts fish production through hatcheries, processing, and marketing.",
+          "eligibility": "Fish farmers and related enterprises.",
+          "link": "https://enmefp.gov.in/"
+        },
+        {
+          "scheme": "Pradhan Mantri Gram Sadak Yojana (PMGSY)",
+          "summary": "Rural road connectivity to unconnected habitations.",
+          "eligibility": "Rural areas with population ≥ 250 (≥ 500 in hilly/tribal/forest areas).",
+          "link": "https://pmgsy.nic.in/"
+        },
+        {
+          "scheme": "Pradhan Mantri Matsya Sampada Yojana (PMMSY)",
+          "summary": "Enhances fish production, transport, and infrastructure.",
+          "eligibility": "Fishers, fish farmers, processors.",
+          "link": "https://enmefp.gov.in/"
+        },
+        {
+          "scheme": "National Beekeeping and Honey Mission (NBHM)",
+          "summary": "Promotes beekeeping and value addition in honey production.",
+          "eligibility": "Beekeepers, farmer clusters, FPOs.",
+          "link": "https://dahd.nic.in/"
+        },
+        {
+          "scheme": "Integrated Pest Management Programme (IPM)",
+          "summary": "Reduces pesticide use by promoting biological pest control.",
+          "eligibility": "Farmers cultivating crops prone to pests.",
+          "link": "https://vikaspedia.in/agriculture/pesticides-and-pest-management"
+        },
+        {
+          "scheme": "Soil & Land Use Survey of India (SLUSI)",
+          "summary": "Provides land resources information for farming and planning.",
+          "eligibility": "Farmers, institutions, state agencies.",
+          "link": "https://slusi.dac.gov.in/"
+        },
+        {
+          "scheme": "Assistance for Construction/Expansion of Cold Storage",
+          "summary": "Subsidy support for setting up cold storage units.",
+          "eligibility": "Cooperatives, FPOs, entrepreneurs.",
+          "link": "https://agricoop.gov.in/"
+        },
+        {
+          "scheme": "Krishi Vigyan Kendra (KVK) Support",
+          "summary": "Provides technical training and farm advisories through KVKs.",
+          "eligibility": "Farmers, farmwomen, rural youth.",
+          "link": "https://icar.org.in/kvk"
+        },
+        {
+          "scheme": "Mission for Integrated Development of Horticulture (MIDH)",
+          "summary": "Promotes horticulture through cluster development and infrastructure.",
+          "eligibility": "Farmers, FPOs, nurseries.",
+          "link": "https://midh.gov.in/"
+        },
+        {
+          "scheme": "Rashtriya Krishi Vikas Yojana – Remunerative Approaches for Agriculture and Allied Sectors (RKVY-RAFTAAR)",
+          "summary": "Promotes agri-entrepreneurship, innovation, and value chains.",
+          "eligibility": "Innovators, startups, FPOs.",
+          "link": "https://rkvy.nic.in/"
+        },
+        {
+          "scheme": "National Food Security Mission (NFSM)",
+          "summary": "Enhances production of rice, wheat, pulses, and nutri-cereals.",
+          "eligibility": "Farmers growing these crops.",
+          "link": "https://nfsm.gov.in/"
+        },
+        {
+          "scheme": "Paramparagat Krishi Vikas Yojna – PKVY II",
+          "summary": "Supports organic farming expansion through clusters.",
+          "eligibility": "Farmers adopting organic farming.",
+          "link": "https://vikaspedia.in/"
+        },
+        {
+          "scheme": "National Project on Agroforestry (NPAF)",
+          "summary": "Promotes trees on cropland and wasteland for livelihood.",
+          "eligibility": "Farmers, landowners.",
+          "link": "https://vikaspedia.in/"
+        },
+        {
+          "scheme": "Centre of Excellence (CoE) for Agri-Innovation",
+          "summary": "Supports research and commercialization of agri-innovations.",
+          "eligibility": "Universities, startups, SMEs.",
+          "link": "https://agricoop.gov.in/"
+        },
+        {
+          "scheme": "Maharashtra drip irrigation subsidy scheme",
+          "summary": "Subsidy support for installing drip irrigation in Maharashtra.",
+          "eligibility": "Farmers in Maharashtra with drip irrigation.",
+          "link": "https://dot.maharashtra.gov.in/"
+        },
+        {
+          "scheme": "Kerala Organic Farming Conversion Incentive",
+          "summary": "Financial support for farmers converting to organic farming.",
+          "eligibility": "Farmers transitioning to organic cultivation in Kerala.",
+          "link": "https://kerala.gov.in/"
+        },
+        {
+          "scheme": "Bihar Farmer Health Card Scheme",
+          "summary": "Health monitoring and medical support for farmers.",
+          "eligibility": "Registered farmers in Bihar.",
+          "link": "https://state.bihar.gov.in/"
+        },
+        {
+          "scheme": "WB Krishak Bandhu (West Bengal)",
+          "summary": "Provides financial assistance and pension to farmers.",
+          "eligibility": "Marginal and small farmers in West Bengal.",
+          "link": "https://wb.gov.in/"
+        },
+        
+          {
+            "scheme": "Pradhan Mantri Shram Yogi Maan-dhan (PM-SYM)",
+            "summary": "Pension scheme for unorganized workers providing ₹3,000/month post-retirement.",
+            "eligibility": "Weavers, farmers, construction workers aged 18–40.",
+            "link": "https://pmnsy.gov.in/"
+          },
+          {
+            "scheme": "Laadli Behna Yojana (Chhattisgarh)",
+            "summary": "Monthly financial support to girls and daughters in BPL families.",
+            "eligibility": "Girls aged 0–18 from BPL families in Chhattisgarh.",
+            "link": "https://chhattisgarh.gov.in/"
+          },
+          {
+            "scheme": "Arunachal Pradesh Student Credit Card",
+            "summary": "Interest-free student loan for higher education.",
+            "eligibility": "Students from Arunachal Pradesh pursuing higher studies.",
+            "link": "https://arunachalpradesh.gov.in/"
+          },
+          {
+            "scheme": "Punjab Crop Loan Waiver Scheme",
+            "summary": "Waiver of agriculture loans up to ₹2 lakh.",
+            "eligibility": "Small and marginal farmers with loans up to ₹2 lakh in Punjab.",
+            "link": "https://punjab.gov.in/"
+          },
+          {
+            "scheme": "Telangana Indiramma Housing Scheme",
+            "summary": "Provision of free housing for rural poor.",
+            "eligibility": "Rural BPL households in Telangana.",
+            "link": "https://telangana.gov.in/"
+          },
+          {
+            "scheme": "Maharashtra Farm Loan Waiver Scheme",
+            "summary": "One-time waiver of crop loans up to ₹1 lakh.",
+            "eligibility": "Marginal farmers in Maharashtra.",
+            "link": "https://mahaagri.gov.in/"
+          },
+          {
+            "scheme": "Karnataka Gruha Jyoti Yojana",
+            "summary": "Subsidised electricity connections and street lighting in rural areas.",
+            "eligibility": "Rural households and village panchayats in Karnataka.",
+            "link": "https://karnataka.gov.in/"
+          },
+          {
+            "scheme": "Himachal Pradesh Crop Insurance Scheme",
+            "summary": "Subsidised crop insurance for hill farmers.",
+            "eligibility": "Farmers in Himachal Pradesh cultivating notified crops.",
+            "link": "https://himachal.nic.in/"
+          },
+          {
+            "scheme": "Goa Millets Scheme",
+            "summary": "Incentives for millet cultivation and consumption.",
+            "eligibility": "Small farmers in Goa.",
+            "link": "https://goa.gov.in/"
+          },
+          {
+            "scheme": "Uttar Pradesh Solar-Powered Cold Storage Scheme",
+            "summary": "Subsidy for installing solar cold storage units.",
+            "eligibility": "Cold storage entrepreneurs/farmers in UP.",
+            "link": "https://up.gov.in/"
+          },
+          {
+            "scheme": "Punjab Solar Atlas Scheme",
+            "summary": "Geospatial mapping for optimal solar power use in farming.",
+            "eligibility": "Farmers and solar project developers in Punjab.",
+            "link": "https://punjab.gov.in/"
+          },
+          {
+            "scheme": "Odisha Krishi Seva Yojana",
+            "summary": "Mobile farm clinics and advisory services.",
+            "eligibility": "Farmers in Odisha’s rural areas.",
+            "link": "https://odisha.gov.in/"
+          },
+          {
+            "scheme": "Jharkhand Kisan Suryoday Yojana",
+            "summary": "Solar street lighting and farm lighting solutions.",
+            "eligibility": "Village panchayats and farmers in Jharkhand.",
+            "link": "https://jharkhand.gov.in/"
+          },
+          {
+            "scheme": "West Bengal Dairy Development Scheme",
+            "summary": "Subsidy and training for small dairy farmers.",
+            "eligibility": "Small dairy farmers in West Bengal.",
+            "link": "https://wb.gov.in/"
+          },
+          {
+            "scheme": "Assam Fishermen Welfare Scheme",
+            "summary": "Financial aid and training for riverine fishers.",
+            "eligibility": "Fisherfolk in Assam’s riverine areas.",
+            "link": "https://assam.gov.in/"
+          },
+          {
+            "scheme": "Madhya Pradesh Farmer Pension Scheme",
+            "summary": "Pension support of ₹500/month for small farmers.",
+            "eligibility": "Small and marginal farmers aged 60+ in MP.",
+            "link": "https://mp.gov.in/"
+          },
+          {
+            "scheme": "Rajasthan Solar-Powered Irrigation Scheme",
+            "summary": "Subsidy for solar pump sets for irrigation.",
+            "eligibility": "Farmers in Rajasthan.",
+            "link": "https://rajasthan.gov.in/"
+          },
+          {
+            "scheme": "Chhattisgarh Millet Mission",
+            "summary": "Support for millet cultivation and processing.",
+            "eligibility": "Farmers growing millets in Chhattisgarh.",
+            "link": "https://chhattisgarh.gov.in/"
+          },
+          {
+            "scheme": "Kashmir Tribal Apprenticeship Scheme",
+            "summary": "Skill training and stipend for tribal youth.",
+            "eligibility": "Tribal youth in Jammu & Kashmir.",
+            "link": "https://jammukashmir.gov.in/"
+          },
+          {
+            "scheme": "Mizoram Agricultural Credit Guarantee Scheme",
+            "summary": "Credit guarantees for bank loans to farmers.",
+            "eligibility": "Farmers and agri-entrepreneurs in Mizoram.",
+            "link": "https://mizoram.gov.in/"
+          },
+          {
+            "scheme": "National Afforestation Programme",
+            "summary": "Funds tree planting activities to improve forest cover in degraded areas.",
+            "eligibility": "Forest department, MGNs and community groups.",
+            "link": "https://envfor.nic.in/"
+          },
+          {
+            "scheme": "Integrated Watershed Management Programme (IWMP)",
+            "summary": "Promotes sustainable watershed development and soil-water conservation.",
+            "eligibility": "Rural communities, farmers in watershed areas.",
+            "link": "https://moafa.gov.in/"
+          },
+          {
+            "scheme": "National Livestock Mission",
+            "summary": "Encourages fodder development, genetic improvement, and veterinary care.",
+            "eligibility": "Livestock owners, cooperatives, FPOs.",
+            "link": "https://dahd.nic.in/"
+          },
+          {
+            "scheme": "Organic Value Chain Development in North Eastern Region (OVCDNER)",
+            "summary": "Develops organic production and market linkages in NE India.",
+            "eligibility": "Farmers and FPOs in North-Eastern states.",
+            "link": "https://midh.gov.in/"
+          },
+          {
+            "scheme": "Fisheries and Aquaculture Infrastructure Development Fund (FIDF)",
+            "summary": "Supports infrastructure and machinery for fisheries sector.",
+            "eligibility": "Fishermen, entrepreneurs, SHGs, cooperatives.",
+            "link": "https://enmefp.gov.in/"
+          },
+          {
+            "scheme": "Kuruvai Loan scheme (Tamil Nadu)",
+            "summary": "Short-term loan scheme for Kuruvai paddy cultivation.",
+            "eligibility": "Paddy farmers in Tamil Nadu.",
+            "link": "https://tn.gov.in/"
+          },
+          {
+            "scheme": "Special Central Assistance to Tribal Sub-Scheme (SCA to TSS)",
+            "summary": "Funds tribal development projects including agriculture.",
+            "eligibility": "Tribal communities in scheduled areas.",
+            "link": "https://tribal.nic.in/"
+          },
+          {
+            "scheme": "Pradhan Mantri Shiksha Protsahan Yojana (PMSPY)",
+            "summary": "Scholarships for students from rural and economic weaker sections.",
+            "eligibility": "School students from rural/BPL families.",
+            "link": "https://scholarships.gov.in/"
+          },
+          {
+            "scheme": "North East Cane and Bamboo Development Council",
+            "summary": "Promotes cane and bamboo based livelihoods in NE India.",
+            "eligibility": "Farmers, artisans, entrepreneurs in NE states.",
+            "link": "https://nebcd.nic.in/"
+          },
+          {
+            "scheme": "Krishi Megh – Cloud Computing for Agri Dept",
+            "summary": "Provides cloud services to agriculture departments for data management.",
+            "eligibility": "State agricultural departments.",
+            "link": "https://agricoop.gov.in/"
+          },
+          {
+            "scheme": "Assam Krishi Utpadan Bima Yojana",
+            "summary": "Crop insurance scheme tailored for Assam farmers.",
+            "eligibility": "Assam farmers growing notified crops.",
+            "link": "https://directorateofagriculture.assam.gov.in/"
+          },
+          {
+            "scheme": "Goa Organic Farming Scheme",
+            "summary": "Provides subsidies and training to organic farmers in Goa.",
+            "eligibility": "Goa farmers converting to organic cultivation.",
+            "link": "https://goa.gov.in/"
+          },
+          {
+            "scheme": "Madhya Pradesh Kisan Credit Card – Pashu",
+            "summary": "Animal husbandry focused KCC for livestock-related expenses.",
+            "eligibility": "Livestock farmers in MP.",
+            "link": "https://mp.gov.in/"
+          },
+          {
+            "scheme": "Bihar Solar Pump Irrigation Scheme",
+            "summary": "Subsidy for installing solar pumps for farming in Bihar.",
+            "eligibility": "Farmers with irrigation requirement in Bihar.",
+            "link": "https://state.bihar.gov.in/"
+          },
+          {
+            "scheme": "Chhattisgarh Solar-Powered Borewell Scheme",
+            "summary": "Solarize existing borewells for irrigation in Chhattisgarh.",
+            "eligibility": "Irrigation farmers in CG.",
+            "link": "https://chhattisgarh.gov.in/"
+          },
+          {
+            "scheme": "Odisha Farm mechanization promotion",
+            "summary": "Encourages use of small agricultural machinery in Odisha.",
+            "eligibility": "Small and marginal farmers, FPOs.",
+            "link": "https://odia.gov.in/"
+          },
+          {
+            "scheme": "Andhra Pradesh Zero Budget Natural Farming (AP-ZBNF)",
+            "summary": "Promotes natural farming techniques in AP.",
+            "eligibility": "Farmers in Andhra Pradesh implementing ZBNF.",
+            "link": "https://ap.gov.in/"
+          },
+          {
+            "scheme": "Telangana Rythu Bima (Farmer Insurance)",
+            "summary": "Life insurance for farmers in Telangana.",
+            "eligibility": "Farmers in Telangana.",
+            "link": "https://rythubandhu.telangana.gov.in/"
+          },
+          {
+            "scheme": "Rajasthan Honey Mission",
+            "summary": "Promotes beekeeping and honey processing in Rajasthan.",
+            "eligibility": "Farmers and entrepreneurs in Rajasthan.",
+            "link": "https://rajasthan.gov.in/"
+          },
+          {
+            "scheme": "Uttarakhand Organic Farming Scheme",
+            "summary": "Supports farmers to switch to organic cultivation in Uttarakhand.",
+            "eligibility": "Farmers in Uttarakhand.",
+            "link": "https://uttarakhand.gov.in/"
+          },
+          {
+            "scheme": "Pradhan Mantri Fasal Bima Yojana (PMFBY)",
+            "summary": "Offers crop insurance to farmers against loss due to natural calamities, pests, and diseases.",
+            "eligibility": "All farmers growing notified crops in notified areas.",
+            "link": "https://pmfby.gov.in/"
+          },
+          {
+            "scheme": "Weather Based Crop Insurance Scheme (WBCIS)",
+            "summary": "Provides crop insurance cover based on weather parameters instead of yield.",
+            "eligibility": "Farmers cultivating notified crops in notified areas.",
+            "link": "https://pmfby.gov.in/"
+          },
+          {
+            "scheme": "Pradhan Mantri Krishi Sinchayee Yojana - Per Drop More Crop",
+            "summary": "Supports irrigation infrastructure and promotes water-use efficiency for crops.",
+            "eligibility": "Small and marginal farmers with crop irrigation needs.",
+            "link": "https://pmksy.gov.in/"
+          },
+          {
+            "scheme": "National Food Security Mission (NFSM)",
+            "summary": "Promotes increased crop productivity of rice, wheat, pulses, coarse cereals, and nutri-cereals.",
+            "eligibility": "Farmers growing eligible crops under the mission in target districts.",
+            "link": "https://nfsm.gov.in/"
+          },
+          {
+            "scheme": "Rashtriya Krishi Vikas Yojana (RKVY)",
+            "summary": "Funds state agricultural development projects related to crop production, protection, and marketing.",
+            "eligibility": "Farmers included under state-implemented RKVY projects.",
+            "link": "https://rkvy.nic.in/"
+          },
+          {
+            "scheme": "State Horticulture Mission",
+            "summary": "Supports cultivation of fruit and vegetable crops through subsidies and training.",
+            "eligibility": "Farmers cultivating horticultural crops (fruits, vegetables, spices).",
+            "link": "https://midh.gov.in/"
+          },
+          {
+            "scheme": "Integrated Pest Management Scheme",
+            "summary": "Provides support and awareness to farmers for eco-friendly pest control in crops.",
+            "eligibility": "All crop cultivators using natural pest management practices.",
+            "link": "https://ppqs.gov.in/"
+          },
+          {
+            "scheme": "Paramparagat Krishi Vikas Yojana (PKVY)",
+            "summary": "Encourages organic farming in crop clusters with support for certification and marketing.",
+            "eligibility": "Farmers growing crops using organic methods.",
+            "link": "https://vikaspedia.in/agriculture/schemes/paramparagat-krishi-vikas-yojana"
+          },
+          {
+            "scheme": "Zero Budget Natural Farming (ZBNF)",
+            "summary": "Promotes natural, chemical-free crop farming with reduced input cost.",
+            "eligibility": "Open to all farmers cultivating crops with ZBNF methods.",
+            "link": "https://nmsa.dac.gov.in/"
+          },
+          {
+            "scheme": "Soil Health Card Scheme",
+            "summary": "Helps farmers plan crop nutrient management through regular soil testing.",
+            "eligibility": "All farmers practicing crop cultivation.",
+            "link": "https://soilhealth.dac.gov.in/"
+          }
+        
+        
+      
 ]
   
