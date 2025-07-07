@@ -55,7 +55,7 @@ export function Dashboard({ setActiveView }: DashboardProps) {
             className="flex justify-center"
           >
             <Image 
-              src="https://placehold.co/400x400.png" 
+              src="https://images.unsplash.com/photo-1581093588401-7491f1c00521?auto=format&fit=crop&w=400&q=80" 
               alt="An illustration of a friendly Indian farmer" 
               width={400} 
               height={400} 
@@ -81,7 +81,7 @@ export function Dashboard({ setActiveView }: DashboardProps) {
                     >
                         <div className="relative h-40 w-full">
                             <Image
-                                src="https://placehold.co/300x200.png"
+                                src="https://images.unsplash.com/photo-1600703129760-67c216b8ffb0?auto=format&fit=crop&w=800&q=80"
                                 alt="A healthy green plant"
                                 fill
                                 className="object-cover"
@@ -90,13 +90,13 @@ export function Dashboard({ setActiveView }: DashboardProps) {
                         </div>
                         <CardHeader className="flex flex-row items-center gap-4 p-6">
                             <div className="bg-primary/10 p-3 rounded-xl">
-                            <Leaf className="w-8 h-8 text-primary" />
+                              <Leaf className="w-8 h-8 text-primary" />
                             </div>
                             <CardTitle className="font-headline text-xl">Crop Diagnosis</CardTitle>
                         </CardHeader>
                         <CardContent className="p-6 pt-0">
                             <p className="text-muted-foreground">
-                            Upload a photo to instantly identify diseases and get expert remedies.
+                              Upload a photo to instantly identify diseases and get expert remedies.
                             </p>
                         </CardContent>
                     </Card>
@@ -111,15 +111,15 @@ export function Dashboard({ setActiveView }: DashboardProps) {
                       tabIndex={0}
                       aria-label="Navigate to Market Price Analysis"
                   >
-                       <div className="relative h-40 w-full">
-                            <Image
-                                src="https://placehold.co/300x200.png"
-                                alt="A vibrant market stall with produce"
-                                fill
-                                className="object-cover"
-                                data-ai-hint="market stall"
-                            />
-                        </div>
+                      <div className="relative h-40 w-full">
+                          <Image
+                              src="https://images.unsplash.com/photo-1603252109303-a6f3bdaaa2a3?auto=format&fit=crop&w=800&q=80"
+                              alt="A vibrant market stall with produce"
+                              fill
+                              className="object-cover"
+                              data-ai-hint="market stall"
+                          />
+                      </div>
                       <CardHeader className="flex flex-row items-center gap-4 p-6">
                           <div className="bg-primary/10 p-3 rounded-xl">
                               <BarChart3 className="w-8 h-8 text-primary" />
@@ -128,7 +128,7 @@ export function Dashboard({ setActiveView }: DashboardProps) {
                       </CardHeader>
                       <CardContent className="p-6 pt-0">
                           <p className="text-muted-foreground">
-                          Get real-time market prices and AI-powered advice on when to sell.
+                            Get real-time market prices and AI-powered advice on when to sell.
                           </p>
                       </CardContent>
                   </Card>
@@ -143,15 +143,15 @@ export function Dashboard({ setActiveView }: DashboardProps) {
                       tabIndex={0}
                       aria-label="Navigate to Government Schemes"
                   >
-                        <div className="relative h-40 w-full">
-                            <Image
-                                src="https://placehold.co/300x200.png"
-                                alt="An illustration of a government building"
-                                fill
-                                className="object-cover"
-                                data-ai-hint="government building"
-                            />
-                        </div>
+                      <div className="relative h-40 w-full">
+                          <Image
+                              src="https://images.unsplash.com/photo-1599488615732-2f27f624f720?auto=format&fit=crop&w=800&q=80"
+                              alt="An illustration of a government building"
+                              fill
+                              className="object-cover"
+                              data-ai-hint="government building"
+                          />
+                      </div>
                       <CardHeader className="flex flex-row items-center gap-4 p-6">
                           <div className="bg-primary/10 p-3 rounded-xl">
                               <Landmark className="w-8 h-8 text-primary" />
@@ -160,7 +160,7 @@ export function Dashboard({ setActiveView }: DashboardProps) {
                       </CardHeader>
                       <CardContent className="p-6 pt-0">
                           <p className="text-muted-foreground">
-                          Ask about government schemes and get clear summaries on eligibility.
+                            Ask about government schemes and get clear summaries on eligibility.
                           </p>
                       </CardContent>
                   </Card>
