@@ -31,7 +31,14 @@ export function Dashboard({ setActiveView }: DashboardProps) {
         <div className="container mx-auto px-4">
             <h2 className="text-3xl font-bold tracking-tight text-center mb-12">Our Features</h2>
             <div className="grid gap-8 md:grid-cols-3">
-                <Card className="hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 animate-in fade-in slide-in-from-bottom-5 duration-500 delay-300">
+                <Card 
+                    className="hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 animate-in fade-in slide-in-from-bottom-5 duration-500 delay-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                    onClick={() => setActiveView('disease')}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setActiveView('disease'); }}
+                    role="button"
+                    tabIndex={0}
+                    aria-label="Navigate to Crop Disease Diagnosis"
+                >
                 <CardHeader className="flex flex-row items-center gap-4">
                     <div className="bg-primary/10 p-3 rounded-full">
                     <Sprout className="w-8 h-8 text-primary" />
@@ -45,7 +52,14 @@ export function Dashboard({ setActiveView }: DashboardProps) {
                 </CardContent>
                 </Card>
 
-                <Card className="hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 animate-in fade-in slide-in-from-bottom-5 duration-500 delay-400">
+                <Card 
+                    className="hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 animate-in fade-in slide-in-from-bottom-5 duration-500 delay-400 cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                    onClick={() => setActiveView('market')}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setActiveView('market'); }}
+                    role="button"
+                    tabIndex={0}
+                    aria-label="Navigate to Market Price Analysis"
+                >
                 <CardHeader className="flex flex-row items-center gap-4">
                     <div className="bg-primary/10 p-3 rounded-full">
                         <BarChart3 className="w-8 h-8 text-primary" />
@@ -59,7 +73,14 @@ export function Dashboard({ setActiveView }: DashboardProps) {
                 </CardContent>
                 </Card>
 
-                <Card className="hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 animate-in fade-in slide-in-from-bottom-5 duration-500 delay-500">
+                <Card 
+                    className="hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 animate-in fade-in slide-in-from-bottom-5 duration-500 delay-500 cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                    onClick={() => setActiveView('schemes')}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setActiveView('schemes'); }}
+                    role="button"
+                    tabIndex={0}
+                    aria-label="Navigate to Government Schemes"
+                >
                 <CardHeader className="flex flex-row items-center gap-4">
                     <div className="bg-primary/10 p-3 rounded-full">
                         <Landmark className="w-8 h-8 text-primary" />

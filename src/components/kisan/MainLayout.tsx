@@ -37,6 +37,10 @@ export function MainLayout() {
       <main className="flex-1">
         {renderView()}
       </main>
+      <footer className="py-6 text-center text-sm text-muted-foreground border-t bg-background">
+        <p className="font-semibold">A Procedural Prospectors Creation</p>
+        <p className="mt-1">Developed by Sarvesh Ganesan</p>
+      </footer>
     </div>
   );
 }

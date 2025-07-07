@@ -73,19 +73,12 @@ export function GovernmentSchemes() {
       if (response?.media) {
         setAudioUrl(response.media);
       } else {
-        toast({
-          variant: 'destructive',
-          title: 'Speech Unavailable',
-          description: 'Could not generate audio due to high demand. Please try again later.',
-        });
+        // Speech unavailable, do nothing.
+        console.warn("Speech generation failed or returned no media.");
       }
     } catch (error) {
+      // Log error but don't show toast to user
       console.error('Error during speech generation call:', error);
-      toast({
-        variant: 'destructive',
-        title: 'Speech Error',
-        description: 'An unexpected error occurred while generating audio.',
-      });
     } finally {
       setIsSpeaking(false);
     }

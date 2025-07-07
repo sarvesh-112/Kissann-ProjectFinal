@@ -112,19 +112,12 @@ export function ChatAssistant() {
       if (response?.media) {
         setAudioUrl(response.media);
       } else {
-        toast({
-          variant: 'destructive',
-          title: 'Speech Unavailable',
-          description: 'Could not generate audio due to high demand. Please try again later.',
-        });
+        // Speech unavailable, do nothing to avoid showing a toast.
+        console.warn('TTS service did not return audio media.');
       }
     } catch (error) {
-      console.error('Error during speech generation call:', error);
-      toast({
-        variant: 'destructive',
-        title: 'Speech Error',
-        description: 'An unexpected error occurred while generating audio.',
-      });
+      // Log error but don't show a toast to the user
+      console.error('Error during TTS call, handled gracefully:', error);
     } finally {
       setIsSpeaking(false);
     }
