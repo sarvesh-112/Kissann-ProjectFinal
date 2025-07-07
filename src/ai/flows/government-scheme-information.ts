@@ -1,12 +1,12 @@
 'use server';
 
 /**
- * @fileOverview An AI agent to find relevant government schemes for farmers.
+ * @fileOverview An AI agent to find relevant government schemes for farmers using local search.
  */
 
 import fs from 'fs';
 import path from 'path';
-import { z } from 'genkit';
+import Fuse from 'fuse.js';
 import { ai } from '@/ai/genkit';
 
 import {
@@ -31,27 +31,11 @@ try {
   console.error('❌ Failed to load or parse govt-schemes.json:', error);
 }
 
-const schemeFinderPrompt = ai.definePrompt({
-  name: 'schemeFinderPrompt',
-  input: {
-    schema: z.object({
-      query: z.string(),
-      schemes: z.any(), // Pass the whole list as a stringified JSON
-    }),
-  },
-  output: { schema: GovernmentSchemeInformationOutputSchema },
-  prompt: `You are an expert on Indian government agricultural schemes. Your task is to find the most relevant scheme for a farmer based on their query.
-
-Here is the list of available schemes:
-\`\`\`json
-{{{schemes}}}
-\`\`\`
-
-Here is the farmer's query: "{{query}}"
-
-Analyze the query and select the single best matching scheme from the list. If no scheme is a good match, you MUST return an object with the "scheme" field set to "Not Found" and provide a helpful message in the "summary" explaining that you couldn't find a direct match.
-Do not invent schemes. Only use information from the provided JSON list.
-`,
+// Initialize Fuse.js for fuzzy searching
+const fuse = new Fuse(schemes, {
+  keys: ['scheme', 'summary', 'eligibility'],
+  threshold: 0.4, // Adjust for more or less strict matching
+  includeScore: true,
 });
 
 const schemeFinderFlow = ai.defineFlow(
@@ -61,18 +45,27 @@ const schemeFinderFlow = ai.defineFlow(
     outputSchema: GovernmentSchemeInformationOutputSchema,
   },
   async (input) => {
-    // Stringify the schemes to pass them into the prompt
-    const schemesAsJsonString = JSON.stringify(schemes, null, 2);
+    const results = fuse.search(input.query);
 
-    const { output } = await schemeFinderPrompt({
-      query: input.query,
-      schemes: schemesAsJsonString,
-    });
-
-    if (!output) {
-      throw new Error('The model did not return a valid scheme.');
+    if (results.length > 0) {
+      // The best match is the first result with the lowest score
+      const bestMatch = results[0].item;
+      return {
+        scheme: bestMatch.scheme,
+        summary: bestMatch.summary,
+        eligibility: bestMatch.eligibility,
+        link: bestMatch.link,
+      };
+    } else {
+      // If no suitable match is found, return a "Not Found" response.
+      // This is handled as a successful flow, but with a specific output.
+      return {
+        scheme: 'Not Found',
+        summary: `I could not find a specific scheme related to "${input.query}". Please try rephrasing your question or ask about a different topic.`,
+        eligibility: 'N/A',
+        link: 'https://www.india.gov.in/',
+      };
     }
-    return output;
   }
 );
 
@@ -82,9 +75,10 @@ export async function getGovernmentSchemeInformation(
 ): Promise<GovernmentSchemeInformationOutput> {
   try {
     if (schemes.length === 0) {
-        throw new Error("Government schemes data is not loaded.");
+      throw new Error('Government schemes data is not loaded or is empty.');
     }
     const result = await schemeFinderFlow(input);
+    // Log the successful query, even if it's a "Not Found" result
     logSchemeQuery(input.query, result);
     return result;
   } catch (error) {
