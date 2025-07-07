@@ -139,14 +139,24 @@ export async function askKisanBot(
 
     return result;
   } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
     console.error('Error in askKisanBot:', {
-      message: error instanceof Error ? error.message : String(error),
+      message: errorMessage,
       stack: error instanceof Error ? error.stack : 'No stack available',
       input: query,
       language,
     });
 
-    const fallbackMessage = "I'm unable to fetch a response right now. Try again shortly or ask something simpler.";
+    let fallbackMessage = "I'm unable to fetch a response right now. Try again shortly or ask something simpler.";
+    
+    // Provide more specific feedback for common API issues
+    if (errorMessage.toLowerCase().includes('api key not valid')) {
+        fallbackMessage = 'There is an issue with the AI service configuration. Please check your API key.';
+    } else if (errorMessage.toLowerCase().includes('quota')) {
+        fallbackMessage = 'The service is currently experiencing high demand. Please try again in a few moments.';
+    } else if (errorMessage.toLowerCase().includes('permission denied')) {
+        fallbackMessage = 'The AI service permission is denied. Please ensure the API is enabled in your cloud project.';
+    }
 
     logAgentFailure(query, error, language);
     return fallbackMessage;

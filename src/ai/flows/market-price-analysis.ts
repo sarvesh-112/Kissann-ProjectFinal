@@ -44,11 +44,6 @@ const getMandiPrice = ai.defineTool({
   
   // Simulate API call latency
   await new Promise(resolve => setTimeout(resolve, 500));
-
-  // Simulate potential API failure
-  if (Math.random() < 0.1) { // 10% chance of failure
-    throw new Error("Mandi API is currently unavailable.");
-  }
   
   const prices = {
       'tomato': 22,
