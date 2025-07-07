@@ -3,9 +3,10 @@ import { useState, useEffect, useRef } from 'react';
 interface SpeechRecognitionOptions {
   onTranscript: (transcript: string) => void;
   onError?: (error: string) => void;
+  lang?: string;
 }
 
-export const useSpeechRecognition = ({ onTranscript, onError }: SpeechRecognitionOptions) => {
+export const useSpeechRecognition = ({ onTranscript, onError, lang = 'en-US' }: SpeechRecognitionOptions) => {
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState('');
   const recognitionRef = useRef<SpeechRecognition | null>(null);
@@ -19,10 +20,15 @@ export const useSpeechRecognition = ({ onTranscript, onError }: SpeechRecognitio
       return;
     }
 
+    // Stop any existing recognition instance
+    if (recognitionRef.current) {
+        recognitionRef.current.stop();
+    }
+
     const recognition = new SpeechRecognition();
     recognition.continuous = false;
     recognition.interimResults = false;
-    recognition.lang = 'en-US';
+    recognition.lang = lang;
 
     recognition.onresult = (event) => {
       const currentTranscript = event.results[0][0].transcript;
@@ -38,11 +44,6 @@ export const useSpeechRecognition = ({ onTranscript, onError }: SpeechRecognitio
     };
 
     recognition.onend = () => {
-      if (isListening) {
-        // In some browsers, onend fires even if listening is continuous.
-        // We only want to set isListening to false if it's not a continuous session that ended prematurely.
-        // For our use case (non-continuous), this is fine.
-      }
       setIsListening(false);
     };
 
@@ -52,7 +53,7 @@ export const useSpeechRecognition = ({ onTranscript, onError }: SpeechRecognitio
       recognition.stop();
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [lang]);
 
   const startListening = () => {
     if (recognitionRef.current && !isListening) {

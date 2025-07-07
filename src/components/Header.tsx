@@ -16,7 +16,7 @@ const navLinks: NavLink[] = [
   { label: 'Crop Diagnosis', view: 'disease' },
   { label: 'Price Insights', view: 'market' },
   { label: 'Schemes', view: 'schemes' },
-  { label: 'AI Assistant', view: 'chat' },
+  { label: 'KisanBot', view: 'chat' },
 ];
 
 type HeaderProps = {

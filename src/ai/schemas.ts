@@ -6,12 +6,12 @@
 
 import {z} from 'genkit';
 
-// Schemas for Crop Disease Diagnosis
+// Schemas for Crop Disease Diagnosis (Image-based)
 export const DiagnoseCropDiseaseInputSchema = z.object({
   photoDataUri: z
     .string()
     .describe(
-      "A photo of a crop, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
+      "A photo of a crop, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'"
     ),
 });
 export type DiagnoseCropDiseaseInput = z.infer<typeof DiagnoseCropDiseaseInputSchema>;
@@ -21,6 +21,15 @@ export const DiagnoseCropDiseaseOutputSchema = z.object({
   remedy: z.string().describe('Local remedy suggestions to address the identified issue.'),
 });
 export type DiagnoseCropDiseaseOutput = z.infer<typeof DiagnoseCropDiseaseOutputSchema>;
+
+
+// Schemas for Crop Disease Diagnosis (Symptom-based)
+export const DiagnoseCropDiseaseBySymptomsInputSchema = z.object({
+  symptoms: z.string().describe('A text description of the crop symptoms.'),
+  crop: z.string().optional().describe('The name of the crop affected.'),
+});
+export type DiagnoseCropDiseaseBySymptomsInput = z.infer<typeof DiagnoseCropDiseaseBySymptomsInputSchema>;
+
 
 // Schemas for Market Price Analysis
 export const MarketPriceAnalysisInputSchema = z.object({
@@ -57,3 +66,7 @@ export const TextToSpeechOutputSchema = z.object({
   media: z.string().describe('The base64 encoded WAV audio data URI.'),
 });
 export type TextToSpeechOutput = z.infer<typeof TextToSpeechOutputSchema>;
+
+// Supported Languages for KisanBot
+export const SupportedLanguageSchema = z.enum(['english', 'kannada', 'hindi', 'tamil']);
+export type SupportedLanguage = z.infer<typeof SupportedLanguageSchema>;

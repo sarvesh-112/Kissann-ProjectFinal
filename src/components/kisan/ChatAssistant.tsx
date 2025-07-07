@@ -9,12 +9,15 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
-import { askAssistant } from '@/ai/flows/assistant';
-import { textToSpeech } from '@/ai/flows/tts';
+import { askKisanBot } from '@/ai/flows/kisan-bot';
+import { textToSpeech, type TtsLanguageCode } from '@/ai/flows/tts';
 import { Loader2, Send, Bot, User, Mic, Volume2 } from 'lucide-react';
 import { ScrollArea } from '../ui/scroll-area';
 import { cn } from '@/lib/utils';
 import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
+import { type SupportedLanguage } from '@/ai/schemas';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { Label } from '../ui/label';
 
 type Message = {
   role: 'user' | 'assistant';
@@ -25,11 +28,19 @@ const formSchema = z.object({
   query: z.string().min(1, { message: 'Please enter a message.' }),
 });
 
+const languageToTtsCode: Record<SupportedLanguage, TtsLanguageCode> = {
+  english: 'en-US',
+  kannada: 'kn-IN',
+  hindi: 'hi-IN',
+  tamil: 'ta-IN',
+};
+
 export function ChatAssistant() {
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [language, setLanguage] = useState<SupportedLanguage>('english');
   const { toast } = useToast();
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
@@ -44,6 +55,7 @@ export function ChatAssistant() {
       stopListening();
       form.handleSubmit(onSubmit)(); 
     },
+    lang: languageToTtsCode[language],
   });
 
    useEffect(() => {
@@ -73,7 +85,7 @@ export function ChatAssistant() {
     form.reset();
 
     try {
-      const assistantResponse = await askAssistant(data.query);
+      const assistantResponse = await askKisanBot(data.query, language);
       const assistantMessage: Message = { role: 'assistant', text: assistantResponse };
       setMessages((prev) => [...prev, assistantMessage]);
       handleSpeak(assistantResponse);
@@ -96,7 +108,7 @@ export function ChatAssistant() {
     setIsSpeaking(true);
     setAudioUrl(null);
     try {
-      const response = await textToSpeech(text, 'kn-IN');
+      const response = await textToSpeech(text, languageToTtsCode[language]);
       setAudioUrl(response.media);
     } catch (error) {
       console.error('Error generating speech:', error);
@@ -121,9 +133,28 @@ export function ChatAssistant() {
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 h-[calc(100vh-100px)] flex flex-col">
-       <header className="mb-4">
-        <h1 className="font-headline text-4xl font-bold tracking-tight">AI Assistant</h1>
-        <p className="text-muted-foreground mt-2">Ask me about market prices or government schemes.</p>
+       <header className="mb-4 flex justify-between items-center">
+        <div>
+            <h1 className="font-headline text-4xl font-bold tracking-tight">KisanBot</h1>
+            <p className="text-muted-foreground mt-2">Your AI companion for farming.</p>
+        </div>
+        <div className='flex flex-col gap-2'>
+            <Label htmlFor="language-select">Language</Label>
+            <Select 
+                value={language}
+                onValueChange={(value) => setLanguage(value as SupportedLanguage)}
+            >
+                <SelectTrigger className="w-[180px]" id="language-select">
+                    <SelectValue placeholder="Select language" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="english">English</SelectItem>
+                    <SelectItem value="kannada">Kannada</SelectItem>
+                    <SelectItem value="hindi">Hindi</SelectItem>
+                    <SelectItem value="tamil">Tamil</SelectItem>
+                </SelectContent>
+            </Select>
+        </div>
       </header>
       <Card className="flex-1 flex flex-col shadow-lg">
         <CardContent className="p-0 flex-1 flex flex-col">
@@ -157,7 +188,7 @@ export function ChatAssistant() {
                     render={({ field }) => (
                         <FormItem className="flex-1">
                             <FormControl>
-                                <Input placeholder="e.g., 'What is the price of tomatoes in Bangalore?'" {...field} autoComplete="off" />
+                                <Input placeholder="Ask KisanBot anything..." {...field} autoComplete="off" />
                             </FormControl>
                             <FormMessage />
                         </FormItem>

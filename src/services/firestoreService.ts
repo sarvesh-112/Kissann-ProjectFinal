@@ -94,3 +94,23 @@ export const logSchemeQueryFailure = async (
         console.error('Critical: Failed to log a scheme query failure to Firestore:', logError);
     }
 };
+
+export const logAgentInteraction = async (
+    userInput: string,
+    assistantReply: string,
+    language: string
+) => {
+    try {
+        if (!db) return;
+        const { sessionId } = getSessionInfo();
+        await addDoc(collection(db, 'agent_logs'), {
+            user_input: userInput,
+            assistant_reply: assistantReply,
+            sessionId, // This serves as user_id for now
+            language,
+            timestamp: serverTimestamp(),
+        });
+    } catch (error) {
+        console.error('Error logging agent interaction to Firestore:', error);
+    }
+};

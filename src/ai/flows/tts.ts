@@ -15,9 +15,11 @@ import {
     type TextToSpeechOutput
 } from '@/ai/schemas';
 
+export type TtsLanguageCode = 'en-US' | 'kn-IN' | 'hi-IN' | 'ta-IN';
+
 export async function textToSpeech(
   input: TextToSpeechInput,
-  languageCode: 'en-US' | 'kn-IN' = 'kn-IN'
+  languageCode: TtsLanguageCode = 'kn-IN'
 ): Promise<TextToSpeechOutput> {
   return ttsFlow({ text: input, languageCode });
 }
@@ -27,7 +29,7 @@ const ttsFlow = ai.defineFlow(
     name: 'ttsFlow',
     inputSchema: z.object({
         text: TextToSpeechInputSchema,
-        languageCode: z.enum(['en-US', 'kn-IN']),
+        languageCode: z.enum(['en-US', 'kn-IN', 'hi-IN', 'ta-IN']),
     }),
     outputSchema: TextToSpeechOutputSchema,
   },
