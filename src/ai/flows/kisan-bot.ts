@@ -153,7 +153,7 @@ export async function askKisanBot(
     if (errorMessage.toLowerCase().includes('api key not valid')) {
         fallbackMessage = 'There is an issue with the AI service configuration. Please check your API key.';
     } else if (errorMessage.toLowerCase().includes('quota')) {
-        fallbackMessage = 'The service is currently experiencing high demand. Please try again in a few moments.';
+        fallbackMessage = 'The request failed because the API quota has been exceeded. Please check the billing status and usage limits for your Google Cloud project.';
     } else if (errorMessage.toLowerCase().includes('permission denied')) {
         fallbackMessage = 'The AI service permission is denied. Please ensure the API is enabled in your cloud project.';
     }
